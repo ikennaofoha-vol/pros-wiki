@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voltera Wiki | Product Operating System (PrOS)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gate-line { position: relative; }
+        .gate-line::after {
+            content: ''; position: absolute; top: 0; right: -1rem; bottom: 0; width: 2px; background: #e2e8f0;
+        }
+        .status-pill { transition: all 0.2s ease; cursor: pointer; }
+        .status-pill:hover { transform: translateY(-2px); }
+        .status-pill.active-project { border: 2px solid #4f46e5; background: #1e1b4b !important; }
+        
+        #detail-drawer { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
+        #detail-drawer.open { transform: translateX(0); }
+        .overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .overlay.open { opacity: 1; pointer-events: auto; }
+
+        .phase-card.approved { border-color: #10b981; background-color: #f0fdf4; }
+        .phase-card.approved .dot { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
+        .phase-card.active-phase { border-color: #f59e0b; background-color: #fffbeb; }
+        .phase-card.active-phase .dot { background-color: #f59e0b; box-shadow: 0 0 15px #f59e0b; animation: pulse-amber 2s infinite; }
+        
+        @keyframes pulse-amber { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2 rounded-lg"><i class="fas fa-microchip text-white"></i></div>
+                <span class="text-xl font-extrabold tracking-tight text-slate-800 uppercase">Voltera <span class="text-indigo-600">Wiki</span></span>
+            </div>
+            <div id="sync-status" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <div class="w-2 h-2 bg-slate-300 rounded-full"></div> Offline
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <section class="mb-12 bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+            <div class="relative z-10 max-w-3xl">
+                <h1 id="hero-title" class="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">How Ideas Become <span class="text-indigo-600">Hardware.</span></h1>
+                <p id="hero-desc" class="text-lg text-slate-600 mb-8 leading-relaxed font-medium">The Voltera PrOS is our unified process and "Truth Engine."</p>
+                <div id="active-focus-bar" class="hidden items-center gap-3 bg-indigo-50 border border-indigo-100 p-4 rounded-2xl w-fit">
+                    <i class="fas fa-bullseye text-indigo-600"></i>
+                    <span class="text-sm font-bold text-slate-700">Focusing on: <span id="focused-project-name" class="text-indigo-600 uppercase font-black"></span></span>
+                    <button onclick="resetFocus()" class="text-slate-400 hover:text-slate-600 ml-4"><i class="fas fa-times-circle"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-black text-slate-800 uppercase tracking-wider mb-8">The PrOS Engine</h2>
+            <div id="engine-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-9 gap-4"></div>
+        </section>
+
+        <section class="mb-20">
+            <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl">
+                <div class="flex items-center justify-between mb-10">
+                    <div>
+                        <h2 class="text-2xl font-black uppercase tracking-wider text-indigo-400">Portfolio Status</h2>
+                        <p class="text-slate-400 font-medium italic">Click a row to audit its artifacts above.</p>
+                    </div>
+                    <span id="last-updated" class="text-xs font-black uppercase tracking-widest text-slate-500">Syncing...</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-separate border-spacing-y-4">
+                        <thead>
+                            <tr class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">
+                                <th class="pb-2 px-4">Product Name</th>
+                                <th class="pb-2 px-4">Active Phase</th>
+                                <th class="pb-2 px-4">Vault Count</th>
+                                <th class="pb-2 px-4">Phase Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="map-body" class="text-sm font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detail Drawer -->
+    <div id="drawer-overlay" class="overlay fixed inset-0 bg-slate-950/60 z-[60]" onclick="toggleDrawer()"></div>
+    <div id="detail-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-2xl z-[70] overflow-y-auto p-10">
+        <div class="flex items-center justify-between mb-10">
+            <div id="drawer-phase-badge" class="bg-indigo-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Phase X</div>
+            <button onclick="toggleDrawer()" class="text-slate-400 hover:text-slate-900"><i class="fas fa-times text-2xl"></i></button>
+        </div>
+        <h2 id="drawer-title" class="text-3xl font-black text-slate-900 mb-2">Phase Title</h2>
+        <p id="drawer-question" class="text-lg text-indigo-600 font-bold italic mb-10">The Key Question?</p>
+        
+        <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl flex items-center gap-5 border shadow-sm">
+            <div id="drawer-status-icon" class="w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-sm shrink-0"></div>
+            <div>
+                <p id="drawer-status-label" class="text-[10px] font-black uppercase tracking-widest">Status</p>
+                <div id="drawer-status-action" class="mt-1"></div>
+            </div>
+        </div>
+
+        <div class="space-y-12">
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Inputs</h4>
+                <div id="drawer-inputs" class="text-slate-600 text-sm leading-relaxed"></div>
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Master Template</h4>
+                <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border">
+                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-indigo-600 shadow-sm"><i class="fas fa-file-invoice"></i></div>
+                    <div class="flex-1">
+                        <span id="drawer-artifact-name" class="font-bold text-slate-800 text-sm">Artifact</span>
+                        <a id="drawer-template-link" href="#" target="_blank" class="block text-indigo-600 text-[10px] font-black uppercase tracking-widest mt-1 hover:underline">Download Master Template</a>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-8">
+                <div><h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Output</h4><div id="drawer-output" class="text-slate-700 text-sm font-bold"></div></div>
+                <div><h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Decision Gate</h4><div id="drawer-gate" class="text-indigo-800 text-xs font-bold italic"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- YOUR SPREADSHEET ID ---
+        const SHEET_ID = '1ybVCphkVj2pSchWNec3J2J0xm5Urpt5JYR764WkWyFo'; 
+        
+        let cachedPhases = []; 
+        let cachedPortfolio = []; 
+        let focusedProject = null;
+
+        const getSheetUrl = (sheetName) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+
+        async function fetchSheet(name) {
+            try {
+                const response = await fetch(getSheetUrl(name));
+                const text = await response.text();
+                return parseCSV(text);
+            } catch (e) { return []; }
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+            return lines.slice(1).map(line => {
+                const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/"/g, '').trim());
+                const obj = {};
+                headers.forEach((h, i) => obj[h] = values[i]);
+                return obj;
+            });
+        }
+
+        function focusProject(projectName) {
+            focusedProject = cachedPortfolio.find(p => p.ProductName === projectName);
+            document.getElementById('focused-project-name').innerText = projectName;
+            document.getElementById('active-focus-bar').classList.remove('hidden');
+            renderPortfolio(); renderEngine();
+        }
+
+        function resetFocus() {
+            focusedProject = null;
+            document.getElementById('active-focus-bar').classList.add('hidden');
+            renderPortfolio(); renderEngine();
+        }
+
+        function toggleDrawer(phaseNum) {
+            const drawer = document.getElementById('detail-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const statusBox = document.getElementById('drawer-status-box');
+            const statusIcon = document.getElementById('drawer-status-icon');
+            const statusLabel = document.getElementById('drawer-status-label');
+            const statusAction = document.getElementById('drawer-status-action');
+
+            if (phaseNum) {
+                const data = cachedPhases.find(p => parseInt(p.Phase) === phaseNum);
+                if (!data) return;
+
+                document.getElementById('drawer-phase-badge').innerText = `Phase ${phaseNum}`;
+                document.getElementById('drawer-title').innerText = data.Title;
+                document.getElementById('drawer-question').innerText = data.KeyQuestion;
+                document.getElementById('drawer-inputs').innerText = data.Inputs;
+                document.getElementById('drawer-artifact-name').innerText = data.Title + " Template";
+                document.getElementById('drawer-template-link').href = data.Link;
+                document.getElementById('drawer-output').innerText = data.Output;
+                document.getElementById('drawer-gate').innerText = data.GateDecision;
+
+                if (!focusedProject) {
+                    statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-100 border border-slate-200";
+                    statusIcon.innerHTML = '<i class="fas fa-book-open text-slate-400"></i>';
+                    statusLabel.innerText = "System Guide Mode";
+                    statusAction.innerHTML = '<p class="text-xs font-bold text-slate-500">Select a project below to see actual docs.</p>';
+                } else {
+                    const currentPhaseNum = parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0);
+                    if (phaseNum < currentPhaseNum) {
+                        statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-emerald-50 border border-emerald-100";
+                        statusIcon.innerHTML = '<i class="fas fa-check-double text-emerald-600"></i>';
+                        statusLabel.innerText = "Artifact Approved";
+                        const docLink = focusedProject[`Phase${phaseNum}`];
+                        statusAction.innerHTML = docLink ? `<a href="${docLink}" target="_blank" class="text-sm font-black text-emerald-600 underline">Open Approved Doc</a>` : `<p class="text-xs font-bold text-emerald-600">Approved (No Link Provided)</p>`;
+                    } else if (phaseNum === currentPhaseNum) {
+                        statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-amber-50 border border-amber-100";
+                        statusIcon.innerHTML = '<i class="fas fa-pen-nib text-amber-600"></i>';
+                        statusLabel.innerText = "Active Stage: " + focusedProject.Status;
+                        statusAction.innerHTML = '<p class="text-xs font-bold text-amber-700">Work currently in progress.</p>';
+                    } else {
+                        statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 border border-slate-100";
+                        statusIcon.innerHTML = '<i class="fas fa-lock text-slate-300"></i>';
+                        statusLabel.innerText = "Upcoming Stage";
+                        statusAction.innerHTML = '<p class="text-xs font-bold text-slate-400">Future milestone.</p>';
+                    }
+                }
+                drawer.classList.add('open'); overlay.classList.add('open');
+            } else {
+                drawer.classList.remove('open'); overlay.classList.remove('open');
+            }
+        }
+
+        function renderEngine() {
+            const container = document.getElementById('engine-container');
+            container.innerHTML = '';
+            const currentPhaseNum = focusedProject ? parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0) : 0;
+            
+            for (let i = 1; i <= 9; i++) {
+                const phaseData = cachedPhases.find(p => parseInt(p.Phase) === i) || { Title: `Phase ${i}` };
+                let stateClass = ''; let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase">Phase ${i}</span>`;
+                
+                if (focusedProject) {
+                    if (i < currentPhaseNum) { stateClass = 'approved'; stateLabel = `<span class="text-[9px] font-black text-emerald-500 uppercase"><i class="fas fa-check mr-1"></i>Approved</span>`; }
+                    else if (i === currentPhaseNum) { stateClass = 'active-phase'; stateLabel = `<span class="text-[9px] font-black text-amber-500 uppercase">Active</span>`; }
+                }
+
+                container.innerHTML += `
+                    <div onclick="toggleDrawer(${i})" class="phase-card bg-white p-4 rounded-2xl border border-slate-200 text-center gate-line cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col items-center group ${stateClass}">
+                        ${stateLabel}
+                        <h3 class="font-bold text-xs mt-1 mb-2 leading-tight uppercase tracking-tighter">${phaseData.Title}</h3>
+                        <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200' : (i===1 ? 'bg-indigo-500' : 'bg-slate-200')} rounded-full mb-3"></div>
+                        <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Audit <i class="fas fa-chevron-right ml-1"></i></span>
+                    </div>`;
+            }
+        }
+
+        function renderPortfolio() {
+            const mapBody = document.getElementById('map-body');
+            mapBody.innerHTML = '';
+            cachedPortfolio.forEach(product => {
+                const isFocused = focusedProject && focusedProject.ProductName === product.ProductName;
+                let statusStyles = "bg-slate-100 text-slate-600";
+                const s = (product.Status || "").toLowerCase();
+                if (s === 'pass') statusStyles = "bg-emerald-100 text-emerald-700 border-emerald-200";
+                if (s === 'review') statusStyles = "bg-amber-100 text-amber-700 border-amber-200";
+                if (s === 'draft') statusStyles = "bg-indigo-100 text-indigo-700 border-indigo-200";
+
+                let docsCount = 0;
+                for (let i = 1; i <= 9; i++) { if (product[`Phase${i}`] && product[`Phase${i}`].startsWith('http')) docsCount++; }
+
+                mapBody.innerHTML += `
+                    <tr onclick="focusProject('${product.ProductName}')" class="bg-slate-800 rounded-xl status-pill group ${isFocused ? 'active-project' : ''}">
+                        <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-indigo-500' : 'border-slate-700'} rounded-l-xl uppercase">${product.ProductName}</td>
+                        <td class="py-4 px-4 text-slate-300 font-bold">${product.CurrentPhase}</td>
+                        <td class="py-4 px-4"><span class="bg-slate-700 px-2 py-1 rounded text-[10px] font-black text-indigo-300 border border-indigo-900/50">${docsCount} Artifacts</span></td>
+                        <td class="py-4 px-4"><span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">${product.Status}</span></td>
+                    </tr>`;
+            });
+        }
+
+        async function initDashboard() {
+            const config = await fetchSheet('Config');
+            if (config.length) {
+                const find = (key) => config.find(c => c.Key === key)?.Value || "";
+                document.getElementById('hero-title').innerHTML = find('HeroTitle') || "How Ideas Become Hardware.";
+                document.getElementById('hero-desc').innerText = find('HeroDescription') || "Voltera PrOS Guide.";
+            }
+            cachedPhases = await fetchSheet('Phases');
+            cachedPortfolio = await fetchSheet('Portfolio');
+            renderEngine(); renderPortfolio();
+            document.getElementById('sync-status').innerHTML = `<div class="w-2 h-2 bg-emerald-500 rounded-full"></div> Synchronized`;
+            document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
+        }
+        window.onload = initDashboard;
+    </script>
+</body>
+</html>
