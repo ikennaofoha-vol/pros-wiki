@@ -58,7 +58,7 @@
         </section>
 
         <section class="mb-16">
-            <h2 class="text-2xl font-black text-slate-800 uppercase tracking-wider mb-8">The PrOS Engine</h2>
+            <h2 class="text-2xl font-black text-slate-800 uppercase tracking-wider mb-8 text-center md:text-left">The PrOS Engine</h2>
             <div id="engine-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-9 gap-4"></div>
         </section>
 
@@ -95,7 +95,7 @@
             <div id="drawer-phase-badge" class="bg-indigo-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Phase X</div>
             <button onclick="toggleDrawer()" class="text-slate-400 hover:text-slate-900"><i class="fas fa-times text-2xl"></i></button>
         </div>
-        <h2 id="drawer-title" class="text-3xl font-black text-slate-900 mb-2">Phase Title</h2>
+        <h2 id="drawer-title" class="text-3xl font-black text-slate-900 mb-2 leading-tight">Phase Title</h2>
         <p id="drawer-question" class="text-lg text-indigo-600 font-bold italic mb-10">The Key Question?</p>
         
         <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl flex items-center gap-5 border shadow-sm">
@@ -129,7 +129,7 @@
     </div>
 
     <script>
-        // --- YOUR SPREADSHEET ID ---
+        // --- CONFIGURATION ---
         const SHEET_ID = '1ybVCphkVj2pSchWNec3J2J0xm5Urpt5JYR764WkWyFo'; 
         
         let cachedPhases = []; 
@@ -139,22 +139,42 @@
         const getSheetUrl = (sheetName) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
         async function fetchSheet(name) {
+            console.log(`Fetching sheet: ${name}...`);
             try {
                 const response = await fetch(getSheetUrl(name));
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 const text = await response.text();
-                return parseCSV(text);
-            } catch (e) { return []; }
+                
+                // If the response contains HTML, it's likely a Google Login page (Share settings issue)
+                if (text.trim().startsWith('<!DOCTYPE html>')) {
+                    throw new Error("Access Denied: Please set your Google Sheet sharing to 'Anyone with the link can view'.");
+                }
+                
+                const data = parseCSV(text);
+                console.log(`Successfully loaded ${name}:`, data);
+                return data;
+            } catch (e) { 
+                console.error(`Failed to fetch ${name}:`, e.message);
+                updateSyncStatus("Error", "bg-red-500");
+                return []; 
+            }
         }
 
         function parseCSV(csv) {
-            const lines = csv.split('\n');
+            if (!csv) return [];
+            const lines = csv.split(/\r?\n/);
             const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-            return lines.slice(1).map(line => {
+            return lines.slice(1).filter(line => line.trim() !== "").map(line => {
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/"/g, '').trim());
                 const obj = {};
-                headers.forEach((h, i) => obj[h] = values[i]);
+                headers.forEach((h, i) => obj[h] = values[i] || "");
                 return obj;
             });
+        }
+
+        function updateSyncStatus(text, colorClass) {
+            const status = document.getElementById('sync-status');
+            status.innerHTML = `<div class="w-2 h-2 ${colorClass} rounded-full"></div> ${text}`;
         }
 
         function focusProject(projectName) {
@@ -183,13 +203,13 @@
                 if (!data) return;
 
                 document.getElementById('drawer-phase-badge').innerText = `Phase ${phaseNum}`;
-                document.getElementById('drawer-title').innerText = data.Title;
-                document.getElementById('drawer-question').innerText = data.KeyQuestion;
-                document.getElementById('drawer-inputs').innerText = data.Inputs;
-                document.getElementById('drawer-artifact-name').innerText = data.Title + " Template";
-                document.getElementById('drawer-template-link').href = data.Link;
-                document.getElementById('drawer-output').innerText = data.Output;
-                document.getElementById('drawer-gate').innerText = data.GateDecision;
+                document.getElementById('drawer-title').innerText = data.Title || `Phase ${phaseNum}`;
+                document.getElementById('drawer-question').innerText = data.KeyQuestion || "Key question not set.";
+                document.getElementById('drawer-inputs').innerText = data.Inputs || "No inputs defined.";
+                document.getElementById('drawer-artifact-name').innerText = (data.Title || "Phase") + " Template";
+                document.getElementById('drawer-template-link').href = data.Link || "#";
+                document.getElementById('drawer-output').innerText = data.Output || "No output defined.";
+                document.getElementById('drawer-gate').innerText = data.GateDecision || "No gate criteria set.";
 
                 if (!focusedProject) {
                     statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-100 border border-slate-200";
@@ -207,7 +227,7 @@
                     } else if (phaseNum === currentPhaseNum) {
                         statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-amber-50 border border-amber-100";
                         statusIcon.innerHTML = '<i class="fas fa-pen-nib text-amber-600"></i>';
-                        statusLabel.innerText = "Active Stage: " + focusedProject.Status;
+                        statusLabel.innerText = "Active Stage: " + (focusedProject.Status || "In Progress");
                         statusAction.innerHTML = '<p class="text-xs font-bold text-amber-700">Work currently in progress.</p>';
                     } else {
                         statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 border border-slate-100";
@@ -229,17 +249,23 @@
             
             for (let i = 1; i <= 9; i++) {
                 const phaseData = cachedPhases.find(p => parseInt(p.Phase) === i) || { Title: `Phase ${i}` };
-                let stateClass = ''; let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase">Phase ${i}</span>`;
+                let stateClass = ''; 
+                let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase">Phase ${i}</span>`;
                 
                 if (focusedProject) {
-                    if (i < currentPhaseNum) { stateClass = 'approved'; stateLabel = `<span class="text-[9px] font-black text-emerald-500 uppercase"><i class="fas fa-check mr-1"></i>Approved</span>`; }
-                    else if (i === currentPhaseNum) { stateClass = 'active-phase'; stateLabel = `<span class="text-[9px] font-black text-amber-500 uppercase">Active</span>`; }
+                    if (i < currentPhaseNum) { 
+                        stateClass = 'approved'; 
+                        stateLabel = `<span class="text-[9px] font-black text-emerald-500 uppercase"><i class="fas fa-check mr-1"></i>Approved</span>`; 
+                    } else if (i === currentPhaseNum) { 
+                        stateClass = 'active-phase'; 
+                        stateLabel = `<span class="text-[9px] font-black text-amber-500 uppercase">Active</span>`; 
+                    }
                 }
 
                 container.innerHTML += `
                     <div onclick="toggleDrawer(${i})" class="phase-card bg-white p-4 rounded-2xl border border-slate-200 text-center gate-line cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col items-center group ${stateClass}">
                         ${stateLabel}
-                        <h3 class="font-bold text-xs mt-1 mb-2 leading-tight uppercase tracking-tighter">${phaseData.Title}</h3>
+                        <h3 class="font-bold text-xs mt-1 mb-2 leading-tight uppercase tracking-tighter">${phaseData.Title || "Phase " + i}</h3>
                         <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200' : (i===1 ? 'bg-indigo-500' : 'bg-slate-200')} rounded-full mb-3"></div>
                         <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Audit <i class="fas fa-chevron-right ml-1"></i></span>
                     </div>`;
@@ -249,6 +275,12 @@
         function renderPortfolio() {
             const mapBody = document.getElementById('map-body');
             mapBody.innerHTML = '';
+            
+            if (cachedPortfolio.length === 0) {
+                mapBody.innerHTML = '<tr><td colspan="4" class="py-10 text-center text-slate-500 italic">No project data found. Check sheet sharing settings.</td></tr>';
+                return;
+            }
+
             cachedPortfolio.forEach(product => {
                 const isFocused = focusedProject && focusedProject.ProductName === product.ProductName;
                 let statusStyles = "bg-slate-100 text-slate-600";
@@ -263,26 +295,36 @@
                 mapBody.innerHTML += `
                     <tr onclick="focusProject('${product.ProductName}')" class="bg-slate-800 rounded-xl status-pill group ${isFocused ? 'active-project' : ''}">
                         <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-indigo-500' : 'border-slate-700'} rounded-l-xl uppercase">${product.ProductName}</td>
-                        <td class="py-4 px-4 text-slate-300 font-bold">${product.CurrentPhase}</td>
+                        <td class="py-4 px-4 text-slate-300 font-bold">${product.CurrentPhase || "Not Started"}</td>
                         <td class="py-4 px-4"><span class="bg-slate-700 px-2 py-1 rounded text-[10px] font-black text-indigo-300 border border-indigo-900/50">${docsCount} Artifacts</span></td>
-                        <td class="py-4 px-4"><span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">${product.Status}</span></td>
+                        <td class="py-4 px-4"><span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">${product.Status || "Unknown"}</span></td>
                     </tr>`;
             });
         }
 
         async function initDashboard() {
+            updateSyncStatus("Syncing...", "bg-amber-400 animate-pulse");
+            
             const config = await fetchSheet('Config');
             if (config.length) {
                 const find = (key) => config.find(c => c.Key === key)?.Value || "";
                 document.getElementById('hero-title').innerHTML = find('HeroTitle') || "How Ideas Become Hardware.";
                 document.getElementById('hero-desc').innerText = find('HeroDescription') || "Voltera PrOS Guide.";
             }
+
             cachedPhases = await fetchSheet('Phases');
             cachedPortfolio = await fetchSheet('Portfolio');
-            renderEngine(); renderPortfolio();
-            document.getElementById('sync-status').innerHTML = `<div class="w-2 h-2 bg-emerald-500 rounded-full"></div> Synchronized`;
-            document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
+
+            if (cachedPhases.length || cachedPortfolio.length) {
+                renderEngine(); 
+                renderPortfolio();
+                updateSyncStatus("Synchronized", "bg-emerald-500");
+                document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
+            } else {
+                updateSyncStatus("Error: No Data", "bg-red-500");
+            }
         }
+        
         window.onload = initDashboard;
     </script>
 </body>
