@@ -287,6 +287,7 @@
                         statusAction.innerHTML = `<p class="text-xs font-black text-voltera-green uppercase">Truth Locked</p>`;
                     } else if (phaseNum === currentPhaseNum) {
                         const s = (focusedProject.Status || "").toLowerCase();
+                        // Active Style Logic (Yellow for pending/review/draft, Cyan-Blue for In Progress/Working)
                         const isAction = s === 'in progress' || s === 'working';
                         const colorClass = isAction ? 'voltera-blueDraft' : 'voltera-yellow';
                         const icon = isAction ? 'fa-pen-nib' : 'fa-clock';
