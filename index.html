@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voltera Wiki | Product Operating System (PrOS)</title>
+    <title>Voltera PrOS | Product Operating System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -36,7 +36,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <div class="flex items-center gap-3">
                 <div class="bg-indigo-600 p-2 rounded-lg"><i class="fas fa-microchip text-white"></i></div>
-                <span class="text-xl font-extrabold tracking-tight text-slate-800 uppercase">Voltera <span class="text-indigo-600">Wiki</span></span>
+                <span class="text-xl font-extrabold tracking-tight text-slate-800 uppercase">Voltera <span class="text-indigo-600">PrOS</span></span>
             </div>
             <div id="sync-status" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 <div class="w-2 h-2 bg-slate-300 rounded-full"></div> Offline
@@ -49,7 +49,7 @@
             <div class="relative z-10 max-w-3xl">
                 <h1 id="hero-title" class="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">How Ideas Become <span class="text-indigo-600">Hardware.</span></h1>
                 <p id="hero-desc" class="text-lg text-slate-600 mb-8 leading-relaxed font-medium">The Voltera PrOS is our unified process and "Truth Engine."</p>
-                <div id="active-focus-bar" class="hidden items-center gap-3 bg-indigo-50 border border-indigo-100 p-4 rounded-2xl w-fit">
+                <div id="active-focus-bar" class="hidden items-center gap-3 bg-indigo-50 border border-indigo-100 p-4 rounded-2xl w-fit animate-in fade-in">
                     <i class="fas fa-bullseye text-indigo-600"></i>
                     <span class="text-sm font-bold text-slate-700">Focusing on: <span id="focused-project-name" class="text-indigo-600 uppercase font-black"></span></span>
                     <button onclick="resetFocus()" class="text-slate-400 hover:text-slate-600 ml-4"><i class="fas fa-times-circle"></i></button>
@@ -98,7 +98,7 @@
         <h2 id="drawer-title" class="text-3xl font-black text-slate-900 mb-2 leading-tight">Phase Title</h2>
         <p id="drawer-question" class="text-lg text-indigo-600 font-bold italic mb-10">The Key Question?</p>
         
-        <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl flex items-center gap-5 border shadow-sm">
+        <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl flex items-center gap-5 border shadow-sm transition-all">
             <div id="drawer-status-icon" class="w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-sm shrink-0"></div>
             <div>
                 <p id="drawer-status-label" class="text-[10px] font-black uppercase tracking-widest">Status</p>
@@ -107,12 +107,25 @@
         </div>
 
         <div class="space-y-12">
+            <!-- Core Artifact Section -->
+            <div id="core-artifact-section">
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Primary Phase Artifact</h4>
+                <div id="core-artifact-container" class="space-y-4"></div>
+            </div>
+
+            <!-- Supporting Documents Section -->
+            <div id="support-docs-section" class="hidden">
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Supporting Materials</h4>
+                <div id="support-docs-container" class="space-y-3"></div>
+            </div>
+
             <div>
-                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Inputs</h4>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Methodology Inputs</h4>
                 <div id="drawer-inputs" class="text-slate-600 text-sm leading-relaxed"></div>
             </div>
+            
             <div>
-                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Master Template</h4>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Standard Template</h4>
                 <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border">
                     <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-indigo-600 shadow-sm"><i class="fas fa-file-invoice"></i></div>
                     <div class="flex-1">
@@ -121,6 +134,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="grid grid-cols-2 gap-8">
                 <div><h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Output</h4><div id="drawer-output" class="text-slate-700 text-sm font-bold"></div></div>
                 <div><h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b pb-2">Decision Gate</h4><div id="drawer-gate" class="text-indigo-800 text-xs font-bold italic"></div></div>
@@ -134,6 +148,7 @@
         
         let cachedPhases = []; 
         let cachedPortfolio = []; 
+        let cachedArtifacts = [];
         let focusedProject = null;
 
         const getSheetUrl = (sheetName) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
@@ -145,17 +160,14 @@
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 const text = await response.text();
                 
-                // If the response contains HTML, it's likely a Google Login page (Share settings issue)
                 if (text.trim().startsWith('<!DOCTYPE html>')) {
                     throw new Error("Access Denied: Please set your Google Sheet sharing to 'Anyone with the link can view'.");
                 }
                 
                 const data = parseCSV(text);
-                console.log(`Successfully loaded ${name}:`, data);
                 return data;
             } catch (e) { 
                 console.error(`Failed to fetch ${name}:`, e.message);
-                updateSyncStatus("Error", "bg-red-500");
                 return []; 
             }
         }
@@ -197,6 +209,10 @@
             const statusIcon = document.getElementById('drawer-status-icon');
             const statusLabel = document.getElementById('drawer-status-label');
             const statusAction = document.getElementById('drawer-status-action');
+            
+            const coreContainer = document.getElementById('core-artifact-container');
+            const supportSection = document.getElementById('support-docs-section');
+            const supportContainer = document.getElementById('support-docs-container');
 
             if (phaseNum) {
                 const data = cachedPhases.find(p => parseInt(p.Phase) === phaseNum);
@@ -211,29 +227,74 @@
                 document.getElementById('drawer-output').innerText = data.Output || "No output defined.";
                 document.getElementById('drawer-gate').innerText = data.GateDecision || "No gate criteria set.";
 
+                // Clear previous artifacts
+                coreContainer.innerHTML = '';
+                supportContainer.innerHTML = '';
+                supportSection.classList.add('hidden');
+
                 if (!focusedProject) {
                     statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-100 border border-slate-200";
                     statusIcon.innerHTML = '<i class="fas fa-book-open text-slate-400"></i>';
                     statusLabel.innerText = "System Guide Mode";
-                    statusAction.innerHTML = '<p class="text-xs font-bold text-slate-500">Select a project below to see actual docs.</p>';
+                    statusAction.innerHTML = '<p class="text-xs font-bold text-slate-500">Select a project below to see artifacts.</p>';
+                    coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic">Select a project below to see its specific deliverables.</p>`;
                 } else {
                     const currentPhaseNum = parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0);
+                    
+                    // Filter Artifacts for this project and phase
+                    const projectArtifacts = cachedArtifacts.filter(a => 
+                        a.ProductName === focusedProject.ProductName && parseInt(a.Phase) === phaseNum
+                    );
+
+                    // Set status header
                     if (phaseNum < currentPhaseNum) {
                         statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-emerald-50 border border-emerald-100";
                         statusIcon.innerHTML = '<i class="fas fa-check-double text-emerald-600"></i>';
-                        statusLabel.innerText = "Artifact Approved";
-                        const docLink = focusedProject[`Phase${phaseNum}`];
-                        statusAction.innerHTML = docLink ? `<a href="${docLink}" target="_blank" class="text-sm font-black text-emerald-600 underline">Open Approved Doc</a>` : `<p class="text-xs font-bold text-emerald-600">Approved (No Link Provided)</p>`;
+                        statusLabel.innerText = "Phase Approved & Locked";
+                        statusAction.innerHTML = `<p class="text-xs font-bold text-emerald-600">This lifecycle stage is complete.</p>`;
                     } else if (phaseNum === currentPhaseNum) {
                         statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-amber-50 border border-amber-100";
                         statusIcon.innerHTML = '<i class="fas fa-pen-nib text-amber-600"></i>';
-                        statusLabel.innerText = "Active Stage: " + (focusedProject.Status || "In Progress");
-                        statusAction.innerHTML = '<p class="text-xs font-bold text-amber-700">Work currently in progress.</p>';
+                        statusLabel.innerText = "Active Stage: " + (focusedProject.Status || "Drafting");
+                        statusAction.innerHTML = '<p class="text-xs font-bold text-amber-700">Currently in active cycle.</p>';
                     } else {
                         statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 border border-slate-100";
                         statusIcon.innerHTML = '<i class="fas fa-lock text-slate-300"></i>';
                         statusLabel.innerText = "Upcoming Stage";
                         statusAction.innerHTML = '<p class="text-xs font-bold text-slate-400">Future milestone.</p>';
+                    }
+
+                    // Render Artifacts
+                    const coreDoc = projectArtifacts.find(a => a.IsCore.toUpperCase() === 'TRUE');
+                    const supportDocs = projectArtifacts.filter(a => a.IsCore.toUpperCase() !== 'TRUE');
+
+                    if (coreDoc) {
+                        coreContainer.innerHTML = `
+                            <div class="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl shadow-sm">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-bold text-emerald-900">${coreDoc.Label}</h5>
+                                    <a href="${coreDoc.URL}" target="_blank" class="text-emerald-600 hover:text-emerald-700"><i class="fas fa-external-link-alt"></i></a>
+                                </div>
+                                <p class="text-sm text-emerald-800/70 leading-relaxed italic">${coreDoc.Description || "No context provided."}</p>
+                            </div>
+                        `;
+                    } else {
+                        coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic">No primary artifact linked yet.</p>`;
+                    }
+
+                    if (supportDocs.length > 0) {
+                        supportSection.classList.remove('hidden');
+                        supportDocs.forEach(doc => {
+                            supportContainer.innerHTML += `
+                                <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm group">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <span class="font-bold text-slate-800 text-sm">${doc.Label}</span>
+                                        <a href="${doc.URL}" target="_blank" class="text-slate-400 group-hover:text-indigo-600"><i class="fas fa-external-link-alt text-xs"></i></a>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 leading-normal">${doc.Description || ""}</p>
+                                </div>
+                            `;
+                        });
                     }
                 }
                 drawer.classList.add('open'); overlay.classList.add('open');
@@ -249,8 +310,7 @@
             
             for (let i = 1; i <= 9; i++) {
                 const phaseData = cachedPhases.find(p => parseInt(p.Phase) === i) || { Title: `Phase ${i}` };
-                let stateClass = ''; 
-                let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase">Phase ${i}</span>`;
+                let stateClass = ''; let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase">Phase ${i}</span>`;
                 
                 if (focusedProject) {
                     if (i < currentPhaseNum) { 
@@ -266,7 +326,7 @@
                     <div onclick="toggleDrawer(${i})" class="phase-card bg-white p-4 rounded-2xl border border-slate-200 text-center gate-line cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col items-center group ${stateClass}">
                         ${stateLabel}
                         <h3 class="font-bold text-xs mt-1 mb-2 leading-tight uppercase tracking-tighter">${phaseData.Title || "Phase " + i}</h3>
-                        <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200' : (i===1 ? 'bg-indigo-500' : 'bg-slate-200')} rounded-full mb-3"></div>
+                        <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200' : (i===1 ? 'bg-indigo-500 shadow-[0_0_8px_indigo]' : 'bg-slate-200')} rounded-full mb-3 transition-colors"></div>
                         <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Audit <i class="fas fa-chevron-right ml-1"></i></span>
                     </div>`;
             }
@@ -276,11 +336,6 @@
             const mapBody = document.getElementById('map-body');
             mapBody.innerHTML = '';
             
-            if (cachedPortfolio.length === 0) {
-                mapBody.innerHTML = '<tr><td colspan="4" class="py-10 text-center text-slate-500 italic">No project data found. Check sheet sharing settings.</td></tr>';
-                return;
-            }
-
             cachedPortfolio.forEach(product => {
                 const isFocused = focusedProject && focusedProject.ProductName === product.ProductName;
                 let statusStyles = "bg-slate-100 text-slate-600";
@@ -289,15 +344,16 @@
                 if (s === 'review') statusStyles = "bg-amber-100 text-amber-700 border-amber-200";
                 if (s === 'draft') statusStyles = "bg-indigo-100 text-indigo-700 border-indigo-200";
 
-                let docsCount = 0;
-                for (let i = 1; i <= 9; i++) { if (product[`Phase${i}`] && product[`Phase${i}`].startsWith('http')) docsCount++; }
+                const artifactsCount = cachedArtifacts.filter(a => a.ProductName === product.ProductName).length;
 
                 mapBody.innerHTML += `
                     <tr onclick="focusProject('${product.ProductName}')" class="bg-slate-800 rounded-xl status-pill group ${isFocused ? 'active-project' : ''}">
                         <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-indigo-500' : 'border-slate-700'} rounded-l-xl uppercase">${product.ProductName}</td>
-                        <td class="py-4 px-4 text-slate-300 font-bold">${product.CurrentPhase || "Not Started"}</td>
-                        <td class="py-4 px-4"><span class="bg-slate-700 px-2 py-1 rounded text-[10px] font-black text-indigo-300 border border-indigo-900/50">${docsCount} Artifacts</span></td>
-                        <td class="py-4 px-4"><span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">${product.Status || "Unknown"}</span></td>
+                        <td class="py-4 px-4 text-slate-300 font-bold tracking-tight">${product.CurrentPhase}</td>
+                        <td class="py-4 px-4"><span class="bg-slate-700 px-2 py-1 rounded text-[10px] font-black text-indigo-300 border border-indigo-900/50">${artifactsCount} Artifacts Logs</span></td>
+                        <td class="py-4 px-4">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">${product.Status || "Unknown"}</span>
+                        </td>
                     </tr>`;
             });
         }
@@ -305,24 +361,26 @@
         async function initDashboard() {
             updateSyncStatus("Syncing...", "bg-amber-400 animate-pulse");
             
-            const config = await fetchSheet('Config');
+            const [config, phases, portfolio, artifacts] = await Promise.all([
+                fetchSheet('Config'),
+                fetchSheet('Phases'),
+                fetchSheet('Portfolio'),
+                fetchSheet('Artifacts')
+            ]);
+
+            cachedPhases = phases;
+            cachedPortfolio = portfolio;
+            cachedArtifacts = artifacts;
+
             if (config.length) {
                 const find = (key) => config.find(c => c.Key === key)?.Value || "";
                 document.getElementById('hero-title').innerHTML = find('HeroTitle') || "How Ideas Become Hardware.";
                 document.getElementById('hero-desc').innerText = find('HeroDescription') || "Voltera PrOS Guide.";
             }
 
-            cachedPhases = await fetchSheet('Phases');
-            cachedPortfolio = await fetchSheet('Portfolio');
-
-            if (cachedPhases.length || cachedPortfolio.length) {
-                renderEngine(); 
-                renderPortfolio();
-                updateSyncStatus("Synchronized", "bg-emerald-500");
-                document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
-            } else {
-                updateSyncStatus("Error: No Data", "bg-red-500");
-            }
+            renderEngine(); renderPortfolio();
+            updateSyncStatus("Synchronized", "bg-emerald-500");
+            document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
         }
         
         window.onload = initDashboard;
