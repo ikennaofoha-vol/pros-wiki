@@ -15,7 +15,7 @@
                         voltera: {
                             blue: '#0057FF',
                             blueDark: '#0046CC',
-                            blueDraft: '#00D1FF', /* High-contrast Cyan for active work */
+                            blueDraft: '#00D1FF', /* Cyan-Blue for Active/Working status */
                             green: '#00C853',
                             yellow: '#FFB700',
                             red: '#FF3033',
@@ -33,21 +33,17 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
         
-        /* Custom Status Styles */
         .phase-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border-width: 2px; }
         .phase-card:hover { transform: translateY(-4px); }
         
-        /* Success State */
         .phase-card.approved { border-color: #00C853; background-color: rgba(0, 200, 83, 0.05); }
         .dark .phase-card.approved { background-color: rgba(0, 200, 83, 0.1); }
         .phase-card.approved .dot { background-color: #00C853; box-shadow: 0 0 10px #00C853; }
         
-        /* Pending/Warning/Draft State (Yellow) */
         .phase-card.active-phase { border-color: #FFB700; background-color: rgba(255, 183, 0, 0.05); }
         .dark .phase-card.active-phase { background-color: rgba(255, 183, 0, 0.1); }
         .phase-card.active-phase .dot { background-color: #FFB700; box-shadow: 0 0 15px #FFB700; animation: pulse-yellow 2s infinite; }
 
-        /* Selection State */
         .status-pill.active-project { border: 2px solid #0057FF; background: #0057FF !important; color: white !important; }
 
         @keyframes pulse-yellow { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } 100% { transform: scale(1); opacity: 1; } }
@@ -84,18 +80,30 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        <section class="mb-12 bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
-            <div class="relative z-10 max-w-3xl">
+        <!-- Hero Section -->
+        <section class="mb-12 bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
+            <div class="relative z-10 max-w-4xl">
                 <h1 id="hero-title" class="text-4xl md:text-5xl font-black mb-6 leading-tight">How Ideas Become <span class="text-voltera-blue">Hardware.</span></h1>
-                <p id="hero-desc" class="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed font-medium">
-                    The Voltera Product Operating System (PrOS) is our unified workflow and "Truth Engine." It ensures that every technical decision is backed by validated discovery, transforming raw concepts into professional hardware through a repeatable, high-integrity framework.
+                <p id="hero-desc" class="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8">
+                    The Voltera Product Operating System (PrOS) is our unified workflow and "Truth Engine."
                 </p>
+                
+                <!-- Visual Separator & Instructions Box -->
+                <div id="hero-instr-container" class="hidden relative p-6 md:p-8 bg-indigo-50/50 dark:bg-slate-800/40 border-l-8 border-voltera-blue rounded-r-3xl mb-10 group transition-all">
+                    <div class="absolute top-4 right-4 text-voltera-blue/20 dark:text-white/5 pointer-events-none">
+                        <i class="fas fa-terminal text-4xl"></i>
+                    </div>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-voltera-blue mb-3">System Instructions</h4>
+                    <div id="hero-instructions" class="text-sm md:text-base font-bold italic text-slate-700 dark:text-slate-200 leading-relaxed max-w-3xl"></div>
+                </div>
+
                 <div id="active-focus-bar" class="hidden items-center gap-3 bg-blue-50 dark:bg-voltera-blue/10 border border-voltera-blue/20 p-4 rounded-2xl w-fit">
                     <i class="fas fa-bullseye text-voltera-blue"></i>
                     <span class="text-sm font-bold">Focusing on: <span id="focused-project-name" class="text-voltera-blue uppercase font-black"></span></span>
-                    <button onclick="resetFocus()" class="text-slate-400 hover:text-voltera-red ml-4"><i class="fas fa-times-circle"></i></button>
+                    <button onclick="resetFocus()" class="text-slate-400 hover:text-voltera-red ml-4"><i class="fas fa-times-circle text-xl"></i></button>
                 </div>
             </div>
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-50 dark:bg-voltera-blue/5 rounded-full blur-3xl opacity-50"></div>
         </section>
 
         <section class="mb-16">
@@ -129,9 +137,8 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200 dark:border-slate-800 mt-12 mb-20 text-center">
-        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600">
+        <p id="footer-text" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600">
             Voltera PrOS • Institutional Memory Vault • Est. 2013
         </p>
     </footer>
@@ -169,7 +176,7 @@
 
             <div>
                 <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Methodology Inputs</h4>
-                <div id="drawer-inputs" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed"></div>
+                <div id="drawer-inputs" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium"></div>
             </div>
             
             <div class="grid grid-cols-2 gap-8">
@@ -180,7 +187,6 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
         const SHEET_ID = '1ybVCphkVj2pSchWNec3J2J0xm5Urpt5JYR764WkWyFo'; 
         
         let cachedPhases = []; 
@@ -219,7 +225,7 @@
         }
 
         function parseCSV(csv) {
-            if (!csv) return [];
+            if (!csv || !csv.includes(',')) return [];
             const lines = csv.split(/\r?\n/);
             const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
             return lines.slice(1).filter(line => line.trim() !== "").map(line => {
@@ -275,7 +281,7 @@
                     statusIcon.innerHTML = '<i class="fas fa-info-circle text-slate-400"></i>';
                     statusLabel.innerText = "General Methodology";
                     statusAction.innerHTML = '<p class="text-xs font-bold text-slate-500">Select a project to view specific documents.</p>';
-                    coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic">Awaiting project selection...</p>`;
+                    coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic font-medium">Awaiting project selection...</p>`;
                 } else {
                     const currentPhaseNum = parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0);
                     const projectArtifacts = cachedArtifacts.filter(a => a.ProductName === focusedProject.ProductName && parseInt(a.Phase) === phaseNum);
@@ -287,15 +293,29 @@
                         statusAction.innerHTML = `<p class="text-xs font-black text-voltera-green uppercase">Truth Locked</p>`;
                     } else if (phaseNum === currentPhaseNum) {
                         const s = (focusedProject.Status || "").toLowerCase();
-                        // Active Style Logic (Yellow for pending/review/draft, Cyan-Blue for In Progress/Working)
-                        const isAction = s === 'in progress' || s === 'working';
-                        const colorClass = isAction ? 'voltera-blueDraft' : 'voltera-yellow';
-                        const icon = isAction ? 'fa-pen-nib' : 'fa-clock';
+                        
+                        const isWorking = s === 'in progress' || s === 'working';
+                        const isPending = ['review', 'pending', 'draft'].includes(s);
+                        const isCritical = ['critical', 'stopped'].includes(s);
 
-                        statusBox.className = `mb-10 p-6 rounded-2xl flex items-center gap-5 border ${isAction ? 'bg-cyan-50 dark:bg-voltera-blueDraft/10 border-voltera-blueDraft/30' : 'bg-yellow-50 dark:bg-voltera-yellow/10 border-voltera-yellow/30'}`;
-                        statusIcon.innerHTML = `<i class="fas ${icon} text-${isAction ? 'voltera-blueDraft' : 'voltera-yellow'} text-xl"></i>`;
+                        let colorClass = 'voltera-yellow';
+                        let icon = 'fa-clock';
+                        let bg = 'bg-yellow-50 dark:bg-voltera-yellow/10 border-voltera-yellow/30';
+                        
+                        if (isWorking) {
+                            colorClass = 'voltera-blueDraft';
+                            icon = 'fa-pen-nib';
+                            bg = 'bg-cyan-50 dark:bg-voltera-blueDraft/10 border-voltera-blueDraft/30';
+                        } else if (isCritical) {
+                            colorClass = 'voltera-red';
+                            icon = 'fa-exclamation-triangle';
+                            bg = 'bg-red-50 dark:bg-voltera-red/10 border-voltera-red/30';
+                        }
+
+                        statusBox.className = `mb-10 p-6 rounded-2xl flex items-center gap-5 border ${bg}`;
+                        statusIcon.innerHTML = `<i class="fas ${icon} text-${colorClass} text-xl"></i>`;
                         statusLabel.innerText = "Active Stage: " + (focusedProject.Status || "In Motion");
-                        statusAction.innerHTML = `<p class="text-xs font-black text-${isAction ? 'voltera-blueDraft' : 'voltera-yellow'} uppercase tracking-widest animate-pulse">${isAction ? 'Development Active' : 'Pending Cycle'}</p>`;
+                        statusAction.innerHTML = `<p class="text-xs font-black text-${colorClass} uppercase tracking-widest animate-pulse">${isWorking ? 'Cycle Active' : 'Decision Pending'}</p>`;
                     } else {
                         statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700";
                         statusIcon.innerHTML = '<i class="fas fa-lock text-slate-300"></i>';
@@ -333,11 +353,9 @@
                         });
                     }
                 }
-                drawer.classList.add('drawer-open'); 
-                document.getElementById('drawer-overlay').classList.add('opacity-100', 'pointer-events-auto');
+                drawer.classList.add('drawer-open'); overlay.classList.add('opacity-100', 'pointer-events-auto');
             } else {
-                drawer.classList.remove('drawer-open'); 
-                document.getElementById('drawer-overlay').classList.remove('opacity-100', 'pointer-events-auto');
+                drawer.classList.remove('drawer-open'); overlay.classList.remove('opacity-100', 'pointer-events-auto');
             }
         }
 
@@ -380,19 +398,13 @@
                 let statusStyles = "bg-slate-700 text-slate-400 border-slate-600";
                 const s = (product.Status || "").toLowerCase();
                 
-                if (s === 'pass' || s === 'completed' || s === 'approved') {
+                if (['pass', 'completed', 'approved'].includes(s)) {
                     statusStyles = "bg-voltera-green/10 text-voltera-green border-voltera-green/30";
-                }
-                
-                if (s === 'review' || s === 'pending' || s === 'draft') {
+                } else if (['review', 'pending', 'draft'].includes(s)) {
                     statusStyles = "bg-voltera-yellow/10 text-voltera-yellow border-voltera-yellow/30 font-bold";
-                }
-
-                if (s === 'in progress' || s === 'working') {
+                } else if (['in progress', 'working'].includes(s)) {
                     statusStyles = "bg-voltera-blueDraft/10 text-voltera-blueDraft border-voltera-blueDraft/30 font-bold";
-                }
-                
-                if (s === 'critical' || s === 'stopped') {
+                } else if (['critical', 'stopped'].includes(s)) {
                     statusStyles = "bg-voltera-red/10 text-voltera-red border-voltera-red/30";
                 }
 
@@ -405,7 +417,7 @@
                         <td class="py-4 px-4"><span class="bg-black/20 px-2 py-1 rounded text-[10px] font-black uppercase border border-white/5 text-[#a5b4fc]">${artifactsCount} Artifacts</span></td>
                         <td class="py-4 px-4">
                             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">
-                                <i class="fas ${s === 'pass' || s === 'approved' ? 'fa-check' : (s === 'critical' ? 'fa-times-circle' : (s === 'in progress' || s === 'working' ? 'fa-pen-nib' : 'fa-clock'))} mr-1"></i> ${product.Status || "Unknown"}
+                                <i class="fas ${['pass','completed','approved'].includes(s) ? 'fa-check' : (['critical','stopped'].includes(s) ? 'fa-times-circle' : (['in progress','working'].includes(s) ? 'fa-pen-nib' : 'fa-clock'))} mr-1"></i> ${product.Status || "Unknown"}
                             </span>
                         </td>
                     </tr>`;
@@ -413,32 +425,39 @@
         }
 
         async function initDashboard() {
+            const config = await fetchSheet('Config');
+            if (config.length) {
+                const find = (key) => config.find(c => c.Key === key)?.Value;
+                const title = find('HeroTitle');
+                const desc = find('HeroDescription');
+                const instr = find('HeroInstructions');
+                const footer = find('FooterCopy');
+
+                if (title) document.getElementById('hero-title').innerHTML = title;
+                if (desc) document.getElementById('hero-desc').innerHTML = desc;
+                if (instr) {
+                    document.getElementById('hero-instructions').innerHTML = instr;
+                    document.getElementById('hero-instr-container').classList.remove('hidden');
+                }
+                if (footer) document.getElementById('footer-text').innerText = footer;
+            }
+
             const [phases, portfolio, artifacts] = await Promise.all([
                 fetchSheet('Phases'),
                 fetchSheet('Portfolio'),
                 fetchSheet('Artifacts')
             ]);
             
-            const finalPortfolio = (portfolio && portfolio.length > 0) ? portfolio : [
-                { ProductName: "Raven", CurrentPhase: "Phase 4", Status: "Draft" },
-                { ProductName: "Falcon", CurrentPhase: "Phase 5", Status: "Review" },
-                { ProductName: "LV Dispenser", CurrentPhase: "Phase 2", Status: "Pass" },
-                { ProductName: "Phoenix", CurrentPhase: "Phase 1", Status: "In Progress" }
-            ];
-
             cachedPhases = phases;
-            cachedPortfolio = finalPortfolio;
+            cachedPortfolio = portfolio;
             cachedArtifacts = artifacts;
+
             renderEngine(); renderPortfolio();
-            updateSyncStatus("Synchronized", "bg-voltera-green");
+            const status = document.getElementById('sync-status');
+            status.innerHTML = `<div class="w-2 h-2 bg-voltera-green rounded-full"></div> Synchronized`;
             document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
         }
         
-        function updateSyncStatus(text, colorClass) {
-            const status = document.getElementById('sync-status');
-            if(status) status.innerHTML = `<div class="w-2 h-2 ${colorClass} rounded-full"></div> ${text}`;
-        }
-
         window.onload = initDashboard;
     </script>
 </body>
