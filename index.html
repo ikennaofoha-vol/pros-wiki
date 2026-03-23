@@ -44,12 +44,14 @@
         .dark .phase-card.active-phase { background-color: rgba(255, 183, 0, 0.1); }
         .phase-card.active-phase .dot { background-color: #FFB700; box-shadow: 0 0 15px #FFB700; animation: pulse-yellow 2s infinite; }
 
-        .status-pill.active-project { border: 2px solid #0057FF; background: #0057FF !important; color: white !important; }
+        .status-pill.active-project { border: 2px solid #0057FF; background: #1e1b4b !important; color: white !important; }
 
-        @keyframes pulse-yellow { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-yellow { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
         
         #detail-drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .drawer-open { transform: translateX(0) !important; }
+        
+        .progress-bar-inner { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-voltera-slate-950 text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
@@ -66,7 +68,13 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <!-- Creator Status Box -->
+                <div class="hidden md:flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 border-r border-slate-200 dark:border-slate-600 pr-3">Made By: <span class="text-slate-900 dark:text-white font-bold">Ikenna Ofoha</span></span>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-voltera-blue">Status: <span class="animate-pulse">In Progress</span></span>
+                </div>
+
                 <div id="sync-status" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <div class="w-2 h-2 bg-slate-300 rounded-full"></div> Offline
                 </div>
@@ -81,26 +89,26 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
         <!-- Hero Section -->
-        <section class="mb-6 bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
+        <section class="mb-12 bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
             <div class="relative z-10 max-w-4xl">
-                <h1 id="hero-title" class="text-4xl md:text-5xl font-black mb-6 leading-tight">How Ideas Become <span class="text-voltera-blue">Hardware.</span></h1>
+                <h1 id="hero-title" class="text-4xl md:text-5xl font-black mb-6 leading-tight text-slate-900 dark:text-white">How Ideas Become <span class="text-voltera-blue">Hardware.</span></h1>
                 <p id="hero-desc" class="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8">
                     The Voltera Product Operating System (PrOS) is our unified workflow and "Truth Engine."
                 </p>
                 
                 <!-- Visual Separator & Instructions Box -->
-                <div id="hero-instr-container" class="hidden relative p-4 md:p-5 bg-indigo-50/50 dark:bg-slate-800/40 border-l-8 border-voltera-blue rounded-r-3xl mb-6 group transition-all">
+                <div id="hero-instr-container" class="hidden relative p-6 md:p-8 bg-indigo-50/30 dark:bg-slate-800/40 border-l-8 border-voltera-blue rounded-r-3xl mb-10 group transition-all">
                     <div class="absolute top-4 right-4 text-voltera-blue/20 dark:text-white/5 pointer-events-none">
                         <i class="fas fa-terminal text-4xl"></i>
                     </div>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-voltera-blue mb-1">System Instructions</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-voltera-blue mb-3">System Instructions</h4>
                     <div id="hero-instructions" class="text-sm md:text-base font-bold italic text-slate-700 dark:text-slate-200 leading-relaxed max-w-3xl"></div>
                 </div>
 
                 <div id="active-focus-bar" class="hidden items-center gap-3 bg-blue-50 dark:bg-voltera-blue/10 border border-voltera-blue/20 p-4 rounded-2xl w-fit">
                     <i class="fas fa-bullseye text-voltera-blue"></i>
                     <span class="text-sm font-bold">Focusing on: <span id="focused-project-name" class="text-voltera-blue uppercase font-black"></span></span>
-                    <button onclick="resetFocus()" class="text-slate-400 hover:text-voltera-red ml-4"><i class="fas fa-times-circle text-xl"></i></button>
+                    <button onclick="resetFocus()" class="text-slate-400 hover:text-voltera-red ml-4 transition-all hover:scale-110"><i class="fas fa-times-circle text-xl"></i></button>
                 </div>
             </div>
             <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-50 dark:bg-voltera-blue/5 rounded-full blur-3xl opacity-50"></div>
@@ -116,11 +124,11 @@
                 <div class="flex items-center justify-between mb-10">
                     <div>
                         <h2 class="text-2xl font-black uppercase tracking-wider text-voltera-blue">Portfolio Status</h2>
-                        <p class="text-slate-400 font-medium italic">Audit artifacts by selecting a project lifecycle row.</p>
+                        <p class="text-slate-400 font-medium italic font-inter">Audit artifacts by selecting a project lifecycle row.</p>
                     </div>
                     <span id="last-updated" class="text-xs font-black uppercase tracking-widest text-slate-500">Syncing...</span>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto font-inter">
                     <table class="w-full text-left border-separate border-spacing-y-4">
                         <thead>
                             <tr class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4">
@@ -143,6 +151,7 @@
         </p>
     </footer>
 
+    <!-- Overlay & Detail Drawer -->
     <div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-[60] opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleDrawer()"></div>
     <div id="detail-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white dark:bg-slate-900 shadow-2xl z-[70] overflow-y-auto translate-x-full p-10 transition-colors">
         <div class="flex items-center justify-between mb-10">
@@ -151,37 +160,82 @@
         </div>
         
         <h2 id="drawer-title" class="text-3xl font-black mb-2 leading-tight">Phase Title</h2>
-        <p id="drawer-question" class="text-lg text-voltera-blue font-bold italic mb-10">The Key Question?</p>
+        <p id="drawer-question" class="text-lg text-voltera-blue font-bold italic mb-10 leading-relaxed italic">The Key Question?</p>
         
-        <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl flex items-center gap-5 border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
-            <div id="drawer-status-icon" class="w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm shrink-0"></div>
-            <div>
-                <p id="drawer-status-label" class="text-[10px] font-black uppercase tracking-widest opacity-60">Status</p>
-                <div id="drawer-status-action" class="mt-1"></div>
+        <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all overflow-hidden flex flex-col gap-4">
+            <div class="flex items-center gap-5">
+                <div id="drawer-status-icon" class="w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm shrink-0"></div>
+                <div class="flex-1">
+                    <p id="drawer-status-label" class="text-[10px] font-black uppercase tracking-widest opacity-60">Status</p>
+                    <div id="drawer-status-action" class="mt-1"></div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar Section -->
+            <div id="drawer-progress-container" class="w-full space-y-2">
+                <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span>Phase Completion</span>
+                    <span id="drawer-progress-percent">0%</span>
+                </div>
+                <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div id="drawer-progress-bar" class="h-full bg-voltera-blue progress-bar-inner" style="width: 0%"></div>
+                </div>
             </div>
         </div>
 
-        <div class="space-y-12 pb-20">
-            <div id="core-artifact-section">
+        <div id="drawer-content-flow" class="flex flex-col space-y-12 pb-20">
+            <!-- Template Section -->
+            <div id="master-methodology-section" class="order-1">
+                <h4 id="methodology-label" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 flex items-center gap-2">
+                    <i class="fas fa-file-invoice text-indigo-400"></i> Phase Output Template
+                </h4>
+                <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-voltera-blue shadow-sm">
+                        <i class="fas fa-download text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <span id="drawer-artifact-name" class="font-bold text-slate-800 dark:text-slate-200 text-sm">Artifact Name</span>
+                        <a id="drawer-template-link" href="#" target="_blank" class="block text-voltera-blue text-[10px] font-black uppercase tracking-widest mt-1 hover:underline">Download Template <i class="fas fa-external-link-alt ml-1 text-[8px]"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Primary Artifact -->
+            <div id="core-artifact-section" class="order-2">
                 <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 flex items-center gap-2">
                     <i class="fas fa-star text-voltera-yellow"></i> Primary Phase Artifact
                 </h4>
                 <div id="core-artifact-container" class="space-y-4"></div>
             </div>
 
-            <div id="support-docs-section" class="hidden">
+            <!-- Support Docs -->
+            <div id="support-docs-section" class="hidden order-3">
                 <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Supporting Materials</h4>
                 <div id="support-docs-container" class="space-y-3"></div>
             </div>
 
-            <div>
+            <!-- Inputs -->
+            <div id="inputs-section" class="order-4">
                 <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Methodology Inputs</h4>
-                <div id="drawer-inputs" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed font-medium"></div>
+                <div id="drawer-inputs" class="text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed"></div>
             </div>
             
-            <div class="grid grid-cols-2 gap-8">
-                <div><h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Output</h4><div id="drawer-output" class="text-slate-700 dark:text-slate-300 text-sm font-bold"></div></div>
-                <div><h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Decision Gate</h4><div id="drawer-gate" class="text-voltera-blue text-xs font-bold italic"></div></div>
+            <!-- Output & Gate Grid -->
+            <div id="output-gate-section" class="grid grid-cols-1 md:grid-cols-2 gap-8 order-5">
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 text-indigo-400">Output</h4>
+                    <div id="drawer-output" class="text-slate-700 dark:text-slate-300 text-sm font-bold"></div>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Decision Gate</h4>
+                    <div id="drawer-gate" class="text-voltera-blue text-xs font-bold italic leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- Task Checklist (Dynamically populated) -->
+            <div id="checklist-section" class="order-6">
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Phase Milestone Checklist</h4>
+                <div id="checklist-container" class="space-y-3"></div>
             </div>
         </div>
     </div>
@@ -192,6 +246,7 @@
         let cachedPhases = []; 
         let cachedPortfolio = []; 
         let cachedArtifacts = [];
+        let cachedTracking = [];
         let focusedProject = null;
 
         function toggleTheme() {
@@ -240,11 +295,13 @@
             focusedProject = cachedPortfolio.find(p => p.ProductName === projectName);
             document.getElementById('focused-project-name').innerText = projectName;
             document.getElementById('active-focus-bar').classList.remove('hidden');
+            document.getElementById('active-focus-bar').classList.add('flex');
             renderPortfolio(); renderEngine();
         }
 
         function resetFocus() {
             focusedProject = null;
+            document.getElementById('active-focus-bar').classList.remove('flex');
             document.getElementById('active-focus-bar').classList.add('hidden');
             renderPortfolio(); renderEngine();
         }
@@ -258,69 +315,120 @@
             const statusAction = document.getElementById('drawer-status-action');
             
             const coreContainer = document.getElementById('core-artifact-container');
-            const supportSection = document.getElementById('support-docs-section');
+            const supportSect = document.getElementById('support-docs-section');
             const supportContainer = document.getElementById('support-docs-container');
+            const checklistContainer = document.getElementById('checklist-container');
+            const checklistSect = document.getElementById('checklist-section');
+
+            const progressContainer = document.getElementById('drawer-progress-container');
+            const progressBar = document.getElementById('drawer-progress-bar');
+            const progressPercentText = document.getElementById('drawer-progress-percent');
+            
+            const methodologySect = document.getElementById('master-methodology-section');
+            const coreSect = document.getElementById('core-artifact-section');
+            const inputsSect = document.getElementById('inputs-section');
+            const outGateSect = document.getElementById('output-gate-section');
 
             if (phaseNum) {
                 const data = cachedPhases.find(p => parseInt(p.Phase) === phaseNum);
                 if (!data) return;
 
+                const outputName = data.Output || "Methodology";
+
                 document.getElementById('drawer-phase-badge').innerText = `Phase ${phaseNum}`;
                 document.getElementById('drawer-title').innerText = data.Title || `Phase ${phaseNum}`;
                 document.getElementById('drawer-question').innerText = data.KeyQuestion || "";
                 document.getElementById('drawer-inputs').innerText = data.Inputs || "";
-                document.getElementById('drawer-output').innerText = data.Output || "";
+                document.getElementById('drawer-output').innerText = outputName;
                 document.getElementById('drawer-gate').innerText = data.GateDecision || "";
+                
+                document.getElementById('methodology-label').innerHTML = `<i class="fas fa-file-invoice text-indigo-400"></i> ${outputName} Template`;
+                document.getElementById('drawer-artifact-name').innerText = `${outputName} Template`;
+                document.getElementById('drawer-template-link').href = data.Link || "#";
+                document.getElementById('drawer-template-link').innerHTML = `Download ${outputName} Template <i class="fas fa-external-link-alt ml-1 text-[8px]"></i>`;
 
                 coreContainer.innerHTML = '';
                 supportContainer.innerHTML = '';
-                supportSection.classList.add('hidden');
+                checklistContainer.innerHTML = '';
+                checklistSect.classList.add('hidden');
+                progressContainer.classList.add('hidden');
 
                 if (!focusedProject) {
-                    statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700";
-                    statusIcon.innerHTML = '<i class="fas fa-info-circle text-slate-400"></i>';
+                    methodologySect.className = "order-1";
+                    coreSect.className = "order-2";
+                    inputsSect.className = "order-4";
+                    outGateSect.className = "grid grid-cols-1 md:grid-cols-2 gap-8 order-5";
+
+                    statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm";
+                    statusIcon.innerHTML = '<i class="fas fa-info-circle text-slate-400 text-xl"></i>';
                     statusLabel.innerText = "General Methodology";
-                    statusAction.innerHTML = '<p class="text-xs font-bold text-slate-500">Select a project to view specific documents.</p>';
+                    statusAction.innerHTML = '<p class="text-xs font-bold text-slate-500 font-inter">Select a project to view specific documents.</p>';
                     coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic font-medium">Awaiting project selection...</p>`;
                 } else {
+                    coreSect.className = "order-1";
+                    inputsSect.className = "order-3";
+                    outGateSect.className = "grid grid-cols-1 md:grid-cols-2 gap-8 order-4";
+                    methodologySect.className = "order-5";
+
                     const currentPhaseNum = parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0);
                     const projectArtifacts = cachedArtifacts.filter(a => a.ProductName === focusedProject.ProductName && parseInt(a.Phase) === phaseNum);
 
+                    // Logic for Always Showing Progress/Checklist in the active phase
+                    if (phaseNum === currentPhaseNum) {
+                        progressContainer.classList.remove('hidden');
+                        checklistSect.classList.remove('hidden');
+                        
+                        const track = cachedTracking.find(t => t.Product === focusedProject.ProductName && parseInt(t.Phase) === phaseNum);
+                        const pct = track ? track.Percent : "0%";
+                        progressBar.style.width = pct;
+                        progressPercentText.innerText = pct;
+
+                        if (track) {
+                            for(let i=1; i<=5; i++) {
+                                const taskName = track[`M${i}`];
+                                const isDone = track[`M${i}_Done`]?.toLowerCase() === 'true';
+                                if (taskName) {
+                                    checklistContainer.innerHTML += `
+                                        <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                                            <div class="w-5 h-5 rounded-md flex items-center justify-center ${isDone ? 'bg-voltera-green text-white' : 'bg-slate-200 dark:bg-slate-700'}">
+                                                <i class="fas fa-check text-[10px]"></i>
+                                            </div>
+                                            <span class="text-sm font-medium ${isDone ? 'line-through opacity-50' : ''}">${taskName}</span>
+                                        </div>`;
+                                }
+                            }
+                        } else {
+                            checklistContainer.innerHTML = `<p class="text-slate-400 text-xs italic">No milestones defined for this phase in Tracking sheet.</p>`;
+                        }
+                    }
+
                     if (phaseNum < currentPhaseNum) {
-                        statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-green-50 dark:bg-voltera-green/10 border-voltera-green/30";
+                        statusBox.className = "mb-10 p-6 rounded-2xl flex flex-col gap-4 bg-green-50 dark:bg-voltera-green/10 border-voltera-green/30 shadow-sm";
                         statusIcon.innerHTML = '<i class="fas fa-check-circle text-voltera-green text-xl"></i>';
                         statusLabel.innerText = "Completed & Approved";
-                        statusAction.innerHTML = `<p class="text-xs font-black text-voltera-green uppercase">Truth Locked</p>`;
+                        statusAction.innerHTML = `<p class="text-xs font-black text-voltera-green uppercase tracking-widest">Truth Locked</p>`;
+                        progressBar.className = "h-full bg-voltera-green progress-bar-inner";
+                        progressContainer.classList.remove('hidden');
+                        progressBar.style.width = "100%";
+                        progressPercentText.innerText = "100%";
                     } else if (phaseNum === currentPhaseNum) {
                         const s = (focusedProject.Status || "").toLowerCase();
-                        
-                        const isWorking = s === 'in progress' || s === 'working';
-                        const isPending = ['review', 'pending', 'draft'].includes(s);
+                        const isWorking = ['in progress', 'working'].includes(s);
                         const isCritical = ['critical', 'stopped'].includes(s);
+                        let colorClass = isWorking ? 'voltera-blueDraft' : (isCritical ? 'voltera-red' : 'voltera-yellow');
+                        let icon = isWorking ? 'fa-pen-nib' : (isCritical ? 'fa-exclamation-triangle' : 'fa-clock');
+                        let bg = isWorking ? 'bg-cyan-50 dark:bg-voltera-blueDraft/10 border-voltera-blueDraft/30' : (isCritical ? 'bg-red-50 dark:bg-voltera-red/10 border-voltera-red/30' : 'bg-yellow-50 dark:bg-voltera-yellow/10 border-voltera-yellow/30');
 
-                        let colorClass = 'voltera-yellow';
-                        let icon = 'fa-clock';
-                        let bg = 'bg-yellow-50 dark:bg-voltera-yellow/10 border-voltera-yellow/30';
-                        
-                        if (isWorking) {
-                            colorClass = 'voltera-blueDraft';
-                            icon = 'fa-pen-nib';
-                            bg = 'bg-cyan-50 dark:bg-voltera-blueDraft/10 border-voltera-blueDraft/30';
-                        } else if (isCritical) {
-                            colorClass = 'voltera-red';
-                            icon = 'fa-exclamation-triangle';
-                            bg = 'bg-red-50 dark:bg-voltera-red/10 border-voltera-red/30';
-                        }
-
-                        statusBox.className = `mb-10 p-6 rounded-2xl flex items-center gap-5 border ${bg}`;
+                        statusBox.className = `mb-10 p-6 rounded-2xl flex flex-col gap-4 border ${bg} shadow-sm`;
                         statusIcon.innerHTML = `<i class="fas ${icon} text-${colorClass} text-xl"></i>`;
                         statusLabel.innerText = "Active Stage: " + (focusedProject.Status || "In Motion");
                         statusAction.innerHTML = `<p class="text-xs font-black text-${colorClass} uppercase tracking-widest animate-pulse">${isWorking ? 'Cycle Active' : 'Decision Pending'}</p>`;
+                        progressBar.className = `h-full bg-${colorClass} progress-bar-inner`;
                     } else {
-                        statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700";
-                        statusIcon.innerHTML = '<i class="fas fa-lock text-slate-300"></i>';
+                        statusBox.className = "mb-10 p-6 rounded-2xl flex items-center gap-5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm";
+                        statusIcon.innerHTML = '<i class="fas fa-lock text-slate-300 text-xl"></i>';
                         statusLabel.innerText = "Upcoming Roadmap";
-                        statusAction.innerHTML = '<p class="text-xs font-bold text-slate-400">Not yet started.</p>';
+                        statusAction.innerHTML = '<p class="text-xs font-bold text-slate-400 italic font-inter">Not yet started.</p>';
                     }
 
                     const coreDoc = projectArtifacts.find(a => a.IsCore.toUpperCase() === 'TRUE');
@@ -330,32 +438,34 @@
                         coreContainer.innerHTML = `
                             <div class="bg-voltera-blue dark:bg-voltera-blue/20 p-5 rounded-2xl shadow-lg shadow-voltera-blue/10 border border-voltera-blue/30 group">
                                 <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-bold text-voltera-white">${coreDoc.Label}</h5>
+                                    <h5 class="font-bold text-voltera-white text-sm">${coreDoc.Label}</h5>
                                     <a href="${coreDoc.URL}" target="_blank" class="text-white opacity-60 group-hover:opacity-100 transition-opacity"><i class="fas fa-external-link-alt"></i></a>
                                 </div>
-                                <p class="text-xs text-white/70 leading-relaxed italic">${coreDoc.Description || ""}</p>
-                            </div>
-                        `;
+                                <p class="text-[11px] text-white/70 leading-relaxed italic">${coreDoc.Description || ""}</p>
+                            </div>`;
+                    } else {
+                        coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic font-medium">No primary artifact linked for this project phase.</p>`;
                     }
 
                     if (supportDocs.length > 0) {
-                        supportSection.classList.remove('hidden');
+                        supportSect.classList.remove('hidden');
                         supportDocs.forEach(doc => {
                             supportContainer.innerHTML += `
                                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl group transition-all hover:border-voltera-blue">
                                     <div class="flex justify-between items-start mb-1">
                                         <span class="font-bold text-sm">${doc.Label}</span>
-                                        <a href="${doc.URL}" target="_blank" class="text-slate-400 group-hover:text-voltera-blue"><i class="fas fa-external-link-alt text-xs"></i></a>
+                                        <a href="${doc.URL}" target="_blank" class="text-slate-400 group-hover:text-voltera-blue transition-colors"><i class="fas fa-external-link-alt text-xs"></i></a>
                                     </div>
                                     <p class="text-[11px] text-slate-500">${doc.Description || ""}</p>
-                                </div>
-                            `;
+                                </div>`;
                         });
                     }
                 }
                 drawer.classList.add('drawer-open'); overlay.classList.add('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = 'hidden';
             } else {
                 drawer.classList.remove('drawer-open'); overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = '';
             }
         }
 
@@ -367,24 +477,36 @@
             for (let i = 1; i <= 9; i++) {
                 const phaseData = cachedPhases.find(p => parseInt(p.Phase) === i) || { Title: `Phase ${i}` };
                 let stateClass = 'border-slate-200 dark:border-slate-800'; 
-                let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase">Phase ${i}</span>`;
+                let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Phase ${i}</span>`;
+                let progressBarHtml = '';
                 
                 if (focusedProject) {
+                    const track = cachedTracking.find(t => t.Product === focusedProject.ProductName && parseInt(t.Phase) === i);
+                    const pct = track ? track.Percent : '0%';
+
                     if (i < currentPhaseNum) { 
                         stateClass = 'approved'; 
-                        stateLabel = `<span class="text-[9px] font-black text-voltera-green uppercase"><i class="fas fa-check-circle mr-1"></i>Approved</span>`; 
+                        stateLabel = `<span class="text-[9px] font-black text-voltera-green uppercase tracking-widest"><i class="fas fa-check-circle mr-1"></i>Approved</span>`; 
                     } else if (i === currentPhaseNum) { 
                         stateClass = 'active-phase'; 
-                        stateLabel = `<span class="text-[9px] font-black text-voltera-yellow uppercase"><i class="fas fa-clock mr-1"></i>Active</span>`; 
+                        stateLabel = `<span class="text-[9px] font-black text-voltera-yellow uppercase tracking-widest"><i class="fas fa-clock mr-1"></i>Active</span>`; 
+                        
+                        progressBarHtml = `
+                            <div class="w-full h-1 bg-slate-100 dark:bg-slate-700 rounded-full mt-2 overflow-hidden">
+                                <div class="h-full bg-voltera-yellow" style="width: ${pct}"></div>
+                            </div>
+                            <span class="text-[8px] font-black text-voltera-yellow mt-1">${pct}</span>
+                        `;
                     }
                 }
 
                 container.innerHTML += `
                     <div onclick="toggleDrawer(${i})" class="phase-card bg-white dark:bg-slate-900 p-4 rounded-2xl text-center flex flex-col items-center group ${stateClass}">
                         ${stateLabel}
-                        <h3 class="font-bold text-xs mt-1 mb-2 uppercase tracking-tighter leading-tight">${phaseData.Title || "Phase " + i}</h3>
+                        <h3 class="font-bold text-xs mt-1 mb-2 uppercase tracking-tighter leading-tight h-8 flex items-center justify-center">${phaseData.Title || "Phase " + i}</h3>
+                        ${progressBarHtml}
                         <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200 dark:bg-slate-700' : (i===1 ? 'bg-voltera-blue shadow-[0_0_8px_rgba(0,87,255,0.5)]' : 'bg-slate-200 dark:bg-slate-700')} rounded-full mb-3 transition-colors"></div>
-                        <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-voltera-blue transition-colors">Explore Phase <i class="fas fa-chevron-right ml-1"></i></span>
+                        <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-voltera-blue transition-colors">Explore Phase <i class="fas fa-chevron-right ml-1 text-[7px]"></i></span>
                     </div>`;
             }
         }
@@ -414,7 +536,7 @@
                     <tr onclick="focusProject('${product.ProductName}')" class="bg-slate-800/50 dark:bg-slate-900 rounded-xl status-pill group transition-all hover:bg-slate-800 ${isFocused ? 'active-project' : ''}">
                         <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-voltera-white' : 'border-transparent'} rounded-l-xl uppercase tracking-tighter">${product.ProductName}</td>
                         <td class="py-4 px-4 font-bold tracking-tight text-slate-300">${product.CurrentPhase}</td>
-                        <td class="py-4 px-4"><span class="bg-black/20 px-2 py-1 rounded text-[10px] font-black uppercase border border-white/5 text-[#a5b4fc]">${artifactsCount} Artifacts</span></td>
+                        <td class="py-4 px-4"><span class="bg-black/20 px-2 py-1 rounded text-[10px] font-black uppercase border border-white/5 text-[#a5b4fc] tracking-widest">${artifactsCount} Artifacts</span></td>
                         <td class="py-4 px-4">
                             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles}">
                                 <i class="fas ${['pass','completed','approved'].includes(s) ? 'fa-check' : (['critical','stopped'].includes(s) ? 'fa-times-circle' : (['in progress','working'].includes(s) ? 'fa-pen-nib' : 'fa-clock'))} mr-1"></i> ${product.Status || "Unknown"}
@@ -438,23 +560,26 @@
                 if (instr) {
                     document.getElementById('hero-instructions').innerHTML = instr;
                     document.getElementById('hero-instr-container').classList.remove('hidden');
+                    document.getElementById('hero-instr-container').classList.add('flex');
                 }
                 if (footer) document.getElementById('footer-text').innerText = footer;
             }
 
-            const [phases, portfolio, artifacts] = await Promise.all([
+            const [phases, portfolio, artifacts, tracking] = await Promise.all([
                 fetchSheet('Phases'),
                 fetchSheet('Portfolio'),
-                fetchSheet('Artifacts')
+                fetchSheet('Artifacts'),
+                fetchSheet('Tracking')
             ]);
             
             cachedPhases = phases;
             cachedPortfolio = portfolio;
             cachedArtifacts = artifacts;
+            cachedTracking = tracking;
 
             renderEngine(); renderPortfolio();
             const status = document.getElementById('sync-status');
-            status.innerHTML = `<div class="w-2 h-2 bg-voltera-green rounded-full"></div> Synchronized`;
+            status.innerHTML = `<div class="w-2 h-2 bg-voltera-green rounded-full shadow-[0_0_8px_#00C853]"></div> Synchronized`;
             document.getElementById('last-updated').innerText = `Updated: ${new Date().toLocaleTimeString()}`;
         }
         
