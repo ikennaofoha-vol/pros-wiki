@@ -15,7 +15,7 @@
                         voltera: {
                             blue: '#0057FF',
                             blueDark: '#0046CC',
-                            blueDraft: '#00D1FF', /* Cyan-Blue for Active/Working */
+                            blueDraft: '#00D1FF', /* Cyan-Blue for Active/Working status */
                             green: '#00C853',
                             yellow: '#FFB700',
                             red: '#FF3033',
@@ -50,19 +50,20 @@
         
         #detail-drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .drawer-open { transform: translateX(0) !important; }
+        
         .progress-bar-inner { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-voltera-slate-950 text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
 
-    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors">
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors text-slate-900 dark:text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <div class="flex items-center gap-3">
                 <div class="bg-voltera-blue p-2 rounded-lg shadow-lg shadow-blue-500/20">
                     <i class="fas fa-microchip text-white"></i>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-sm font-extrabold tracking-tight uppercase leading-none text-slate-900 dark:text-white">Voltera <span class="text-voltera-blue">PrOS</span></span>
+                    <span class="text-sm font-extrabold tracking-tight uppercase leading-none">Voltera <span class="text-voltera-blue">PrOS</span></span>
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Product Operating System</span>
                 </div>
             </div>
@@ -71,7 +72,7 @@
                 <!-- Creator Badge -->
                 <div class="hidden md:flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 border-r border-slate-200 dark:border-slate-600 pr-3">Made By: <span class="text-slate-900 dark:text-white font-bold">Ikenna Ofoha</span></span>
-                    <span class="text-[9px] font-black uppercase tracking-widest text-voltera-blue">Status: <span class="animate-pulse">In Progress</span></span>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-voltera-blue">Status: <span class="animate-pulse font-black uppercase">In Progress</span></span>
                 </div>
 
                 <div id="sync-status" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -90,17 +91,16 @@
         <!-- Hero Section -->
         <section class="mb-12 bg-white dark:bg-slate-900 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
             <div class="relative z-10 max-w-4xl">
-                <h1 id="hero-title" class="text-4xl md:text-5xl font-black mb-6 leading-tight text-slate-900 dark:text-white text-sm">How Ideas Become <span class="text-voltera-blue">Hardware.</span></h1>
+                <h1 id="hero-title" class="text-4xl md:text-5xl font-black mb-6 leading-tight text-slate-900 dark:text-white">How Ideas Become <span class="text-voltera-blue">Hardware.</span></h1>
                 <p id="hero-desc" class="text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-8">
                     The Voltera Product Operating System (PrOS) is our unified workflow and "Truth Engine."
                 </p>
                 
-                <!-- Visual Separator & Instructions Box -->
                 <div id="hero-instr-container" class="hidden relative p-6 md:p-8 bg-indigo-50/30 dark:bg-slate-800/40 border-l-8 border-voltera-blue rounded-r-3xl mb-10 group transition-all">
                     <div class="absolute top-4 right-4 text-voltera-blue/20 dark:text-white/5 pointer-events-none">
                         <i class="fas fa-terminal text-4xl"></i>
                     </div>
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-voltera-blue mb-3">System Instructions</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-voltera-blue mb-3 font-inter">System Instructions</h4>
                     <div id="hero-instructions" class="text-sm md:text-base font-bold italic text-slate-700 dark:text-slate-200 leading-relaxed max-w-3xl"></div>
                 </div>
 
@@ -110,7 +110,7 @@
                     <button onclick="resetFocus()" class="text-slate-400 hover:text-voltera-red ml-4 transition-all hover:scale-110"><i class="fas fa-times-circle text-xl"></i></button>
                 </div>
             </div>
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-50 dark:bg-voltera-blue/5 rounded-full blur-3xl opacity-50"></div>
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-50 dark:bg-voltera-blue/5 rounded-full blur-3xl opacity-50 text-slate-900 dark:text-white"></div>
         </section>
 
         <section class="mb-16">
@@ -144,7 +144,7 @@
         </section>
     </main>
 
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200 dark:border-slate-800 mt-12 mb-20 text-center">
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200 dark:border-slate-800 mt-12 mb-20 text-center text-slate-900 dark:text-white">
         <p id="footer-text" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600">
             Voltera PrOS • Institutional Memory Vault • Est. 2013
         </p>
@@ -152,14 +152,14 @@
 
     <!-- Detail Drawer -->
     <div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-[60] opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleDrawer()"></div>
-    <div id="detail-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white dark:bg-slate-900 shadow-2xl z-[70] overflow-y-auto translate-x-full p-10 transition-colors text-slate-900 dark:text-white">
+    <div id="detail-drawer" class="fixed top-0 right-0 h-full w-full max-w-xl bg-white dark:bg-slate-900 shadow-2xl z-[70] overflow-y-auto translate-x-full p-10 transition-colors text-slate-900 dark:text-white font-inter">
         <div class="flex items-center justify-between mb-10">
             <div id="drawer-phase-badge" class="bg-voltera-blue text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Phase X</div>
             <button onclick="toggleDrawer()" class="text-slate-400 hover:text-voltera-red transition-colors"><i class="fas fa-times text-2xl"></i></button>
         </div>
         
         <h2 id="drawer-title" class="text-3xl font-black mb-2 leading-tight">Phase Title</h2>
-        <p id="drawer-question" class="text-lg text-voltera-blue font-bold italic mb-10 leading-relaxed italic">The Key Question?</p>
+        <p id="drawer-question" class="text-lg text-voltera-blue font-bold italic mb-10 leading-relaxed">The Key Question?</p>
         
         <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all overflow-hidden flex flex-col gap-4">
             <div class="flex items-center gap-5">
@@ -170,6 +170,7 @@
                 </div>
             </div>
             
+            <!-- Progress Bar Section -->
             <div id="drawer-progress-container" class="w-full space-y-2">
                 <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
                     <span>Phase Completion</span>
@@ -183,7 +184,7 @@
 
         <div id="drawer-content-flow" class="flex flex-col space-y-12 pb-20">
             <div id="master-methodology-section" class="order-1">
-                <h4 id="methodology-label" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 flex items-center gap-2 font-inter">
+                <h4 id="methodology-label" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 flex items-center gap-2">
                     <i class="fas fa-file-invoice text-indigo-400"></i> Phase Output Template
                 </h4>
                 <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
@@ -198,36 +199,36 @@
             </div>
 
             <div id="core-artifact-section" class="order-2">
-                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 flex items-center gap-2 font-inter">
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 flex items-center gap-2">
                     <i class="fas fa-star text-voltera-yellow"></i> Primary Phase Artifact
                 </h4>
-                <div id="core-artifact-container" class="space-y-4 font-inter"></div>
+                <div id="core-artifact-container" class="space-y-4"></div>
             </div>
 
             <div id="support-docs-section" class="hidden order-3">
-                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 font-inter">Supporting Materials</h4>
-                <div id="support-docs-container" class="space-y-3 font-inter"></div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Supporting Materials</h4>
+                <div id="support-docs-container" class="space-y-3"></div>
             </div>
 
             <div id="inputs-section" class="order-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 font-inter">Methodology Inputs</h4>
-                <div id="drawer-inputs" class="text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed font-inter"></div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Methodology Inputs</h4>
+                <div id="drawer-inputs" class="text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed"></div>
             </div>
             
             <div id="output-gate-section" class="grid grid-cols-1 md:grid-cols-2 gap-8 order-5">
                 <div>
-                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 text-indigo-400 font-inter">Output</h4>
-                    <div id="drawer-output" class="text-slate-700 dark:text-slate-300 text-sm font-bold font-inter"></div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 text-indigo-400">Output</h4>
+                    <div id="drawer-output" class="text-slate-700 dark:text-slate-300 text-sm font-bold"></div>
                 </div>
                 <div>
-                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 font-inter">Decision Gate</h4>
-                    <div id="drawer-gate" class="text-voltera-blue text-xs font-bold italic leading-relaxed font-inter"></div>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Decision Gate</h4>
+                    <div id="drawer-gate" class="text-voltera-blue text-xs font-bold italic leading-relaxed"></div>
                 </div>
             </div>
 
             <div id="checklist-section" class="order-6">
-                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 text-indigo-400 font-inter">Phase Milestone Checklist</h4>
-                <div id="checklist-container" class="space-y-3 font-inter"></div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2 text-indigo-400">Phase Milestone Checklist</h4>
+                <div id="checklist-container" class="space-y-3"></div>
             </div>
         </div>
     </div>
@@ -261,6 +262,22 @@
             if(icon) icon.className = 'fas fa-sun';
         }
 
+        // --- Helper: Find value from row by checking multiple possible column names ---
+        function getVal(row, ...keywords) {
+            if (!row) return "";
+            const keys = Object.keys(row);
+            for (const kw of keywords) {
+                const foundKey = keys.find(k => k.toLowerCase().replace(/[\s_]/g, '') === kw.toLowerCase().replace(/[\s_]/g, ''));
+                if (foundKey) return row[foundKey];
+            }
+            // Fallback: search keys that CONTAIN the keyword
+            for (const kw of keywords) {
+                const foundKey = keys.find(k => k.toLowerCase().includes(kw.toLowerCase()));
+                if (foundKey) return row[foundKey];
+            }
+            return "";
+        }
+
         const getSheetUrl = (sheetName) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
         async function fetchSheet(name) {
@@ -277,12 +294,10 @@
         function parseCSV(csv) {
             if (!csv || !csv.includes(',')) return [];
             const lines = csv.split(/\r?\n/);
-            // STANDARD: Force all headers to lowercase and trim spaces
-            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
             return lines.slice(1).filter(line => line.trim() !== "").map(line => {
                 const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/"/g, '').trim());
                 const obj = {};
-                // All data keys are now lowercase
                 headers.forEach((h, i) => obj[h] = values[i] || "");
                 return obj;
             });
@@ -294,20 +309,19 @@
             if (s.includes('%')) return s;
             let n = parseFloat(s);
             if (isNaN(n)) return "0%";
-            // If user enters 0.4 instead of 40
+            // Handle decimal vs whole number
             if (n <= 1 && n > 0 && s.length < 5) return (Math.round(n * 100)) + "%";
             return Math.round(n) + "%";
         }
 
-        function findTracking(productName, phaseNum) {
+        function findTrackingRow(productName, phaseNum) {
             if (!cachedTracking || !productName) return null;
             const pName = productName.toLowerCase().trim();
             const pNum = parseInt(phaseNum);
             
             return cachedTracking.find(t => {
-                // standardized keys from parseCSV
-                const sheetProduct = (t.product || t.productname || t.project || "").toLowerCase().trim();
-                const sheetPhaseStr = (t.phase || "0").toString();
+                const sheetProduct = getVal(t, 'product', 'productname', 'project').toLowerCase().trim();
+                const sheetPhaseStr = getVal(t, 'phase').toString();
                 const sheetPhaseNum = parseInt(sheetPhaseStr.match(/\d+/) || sheetPhaseStr);
                 return sheetProduct === pName && sheetPhaseNum === pNum;
             });
@@ -315,18 +329,14 @@
 
         function getMilestoneData(row, index) {
             if (!row) return { name: "", done: false };
-            // Standardized lowercase keys
-            const nameKey = `m${index}`;
-            const doneKey = `m${index}_done`;
-            
             return {
-                name: row[nameKey] || "",
-                done: (row[doneKey] || "").toString().toLowerCase() === 'true'
+                name: getVal(row, `m${index}`, `milestone${index}`) || "",
+                done: (getVal(row, `m${index}done`, `m${index}_done`, `milestone${index}done`) || "").toString().toLowerCase() === 'true'
             };
         }
 
         function focusProject(projectName) {
-            focusedProject = cachedPortfolio.find(p => (p.productname || "").toLowerCase().trim() === projectName.toLowerCase().trim());
+            focusedProject = cachedPortfolio.find(p => getVal(p, 'productname', 'product').toLowerCase().trim() === projectName.toLowerCase().trim());
             document.getElementById('focused-project-name').innerText = projectName;
             document.getElementById('active-focus-bar').classList.remove('hidden');
             document.getElementById('active-focus-bar').classList.add('flex');
@@ -364,21 +374,21 @@
             const outGateSect = document.getElementById('output-gate-section');
 
             if (phaseNum) {
-                const data = cachedPhases.find(p => parseInt(p.phase || 0) === phaseNum);
+                const data = cachedPhases.find(p => parseInt(getVal(p, 'phase')) === phaseNum);
                 if (!data) return;
 
-                const outputName = data.output || "Methodology";
+                const outputName = getVal(data, 'output') || "Methodology";
 
                 document.getElementById('drawer-phase-badge').innerText = `Phase ${phaseNum}`;
-                document.getElementById('drawer-title').innerText = data.title || `Phase ${phaseNum}`;
-                document.getElementById('drawer-question').innerText = data.keyquestion || "";
-                document.getElementById('drawer-inputs').innerText = data.inputs || "";
+                document.getElementById('drawer-title').innerText = getVal(data, 'title') || `Phase ${phaseNum}`;
+                document.getElementById('drawer-question').innerText = getVal(data, 'keyquestion') || "";
+                document.getElementById('drawer-inputs').innerText = getVal(data, 'inputs') || "";
                 document.getElementById('drawer-output').innerText = outputName;
-                document.getElementById('drawer-gate').innerText = data.gatedecision || "";
+                document.getElementById('drawer-gate').innerText = getVal(data, 'gatedecision') || "";
                 
                 document.getElementById('methodology-label').innerHTML = `<i class="fas fa-file-invoice text-indigo-400"></i> ${outputName} Template`;
                 document.getElementById('drawer-artifact-name').innerText = `${outputName} Template`;
-                document.getElementById('drawer-template-link').href = data.link || "#";
+                document.getElementById('drawer-template-link').href = getVal(data, 'link') || "#";
                 document.getElementById('drawer-template-link').innerHTML = `Download ${outputName} Template <i class="fas fa-external-link-alt ml-1 text-[8px]"></i>`;
 
                 coreContainer.innerHTML = '';
@@ -404,20 +414,20 @@
                     outGateSect.className = "grid grid-cols-1 md:grid-cols-2 gap-8 order-4";
                     methodologySect.className = "order-5";
 
-                    const currentPhaseNum = parseInt((focusedProject.currentphase || "0").toString().match(/\d+/) || 0);
-                    const pNameLowercase = (focusedProject.productname || "").toLowerCase().trim();
-                    const projectArtifacts = cachedArtifacts.filter(a => (a.productname || "").toLowerCase().trim() === pNameLowercase && parseInt(a.phase || 0) === phaseNum);
+                    const currentPhaseNum = parseInt((getVal(focusedProject, 'currentphase') || "0").toString().match(/\d+/) || 0);
+                    const pName = getVal(focusedProject, 'productname', 'product').toLowerCase().trim();
+                    const projectArtifacts = cachedArtifacts.filter(a => getVal(a, 'productname', 'product').toLowerCase().trim() === pName && parseInt(getVal(a, 'phase')) === phaseNum);
 
                     // --- Actionable Progress Logic ---
                     if (phaseNum === currentPhaseNum) {
                         progressContainer.classList.remove('hidden');
                         checklistSect.classList.remove('hidden');
                         
-                        const track = findTracking(focusedProject.productname, phaseNum);
+                        const track = findTrackingRow(getVal(focusedProject, 'productname', 'product'), phaseNum);
                         
                         let pctVal = "0%";
                         if (track) {
-                            const pctKey = Object.keys(track).find(k => k.includes('%') || k.includes('percent'));
+                            const pctKey = Object.keys(track).find(k => k.toLowerCase().includes('%') || k.toLowerCase().includes('percent'));
                             pctVal = track[pctKey] || "0%";
                         }
                         const pct = formatPercent(pctVal);
@@ -440,9 +450,7 @@
                                         </div>`;
                                 }
                             }
-                            if (!foundAny) {
-                                checklistContainer.innerHTML = `<p class="text-slate-400 text-xs italic">Milestones not defined for this phase in Tracking sheet.</p>`;
-                            }
+                            if (!foundAny) checklistContainer.innerHTML = `<p class="text-slate-400 text-xs italic">Milestones found but names are empty in sheet.</p>`;
                         } else {
                             checklistContainer.innerHTML = `<p class="text-slate-400 text-xs italic">Project tracking row not found for this phase.</p>`;
                         }
@@ -458,7 +466,7 @@
                         progressBar.style.width = "100%";
                         progressPercentText.innerText = "100%";
                     } else if (phaseNum === currentPhaseNum) {
-                        const s = (focusedProject.status || "").toLowerCase();
+                        const s = (getVal(focusedProject, 'status') || "").toLowerCase();
                         const isWorking = ['in progress', 'working'].includes(s);
                         const isCritical = ['critical', 'stopped'].includes(s);
                         let colorClass = isWorking ? 'voltera-blueDraft' : (isCritical ? 'voltera-red' : 'voltera-yellow');
@@ -467,7 +475,7 @@
 
                         statusBox.className = `mb-10 p-6 rounded-2xl flex flex-col gap-4 border ${bg} shadow-sm`;
                         statusIcon.innerHTML = `<i class="fas ${icon} text-${colorClass} text-xl"></i>`;
-                        statusLabel.innerText = "Active Stage: " + (focusedProject.status || "In Motion");
+                        statusLabel.innerText = "Active Stage: " + (getVal(focusedProject, 'status') || "In Motion");
                         statusAction.innerHTML = `<p class="text-xs font-black text-${colorClass} uppercase tracking-widest animate-pulse">${isWorking ? 'Cycle Active' : 'Decision Pending'}</p>`;
                         progressBar.className = `h-full bg-${colorClass} progress-bar-inner`;
                     } else {
@@ -477,17 +485,17 @@
                         statusAction.innerHTML = '<p class="text-xs font-bold text-slate-400 italic font-inter text-sm">Not yet started.</p>';
                     }
 
-                    const coreDoc = projectArtifacts.find(a => (a.iscore || "").toString().toUpperCase() === 'TRUE');
-                    const supportDocs = projectArtifacts.filter(a => (a.iscore || "").toString().toUpperCase() !== 'TRUE');
+                    const coreDoc = projectArtifacts.find(a => getVal(a, 'iscore').toString().toUpperCase() === 'TRUE');
+                    const supportDocs = projectArtifacts.filter(a => getVal(a, 'iscore').toString().toUpperCase() !== 'TRUE');
 
                     if (coreDoc) {
                         coreContainer.innerHTML = `
                             <div class="bg-voltera-blue dark:bg-voltera-blue/20 p-5 rounded-2xl shadow-lg shadow-voltera-blue/10 border border-voltera-blue/30 group transition-all hover:bg-voltera-blue/40">
                                 <div class="flex justify-between items-start mb-2">
-                                    <h5 class="font-bold text-voltera-white text-sm font-inter">${coreDoc.label}</h5>
-                                    <a href="${coreDoc.url}" target="_blank" class="text-white opacity-60 group-hover:opacity-100 transition-opacity"><i class="fas fa-external-link-alt"></i></a>
+                                    <h5 class="font-bold text-voltera-white text-sm font-inter">${getVal(coreDoc, 'label')}</h5>
+                                    <a href="${getVal(coreDoc, 'url')}" target="_blank" class="text-white opacity-60 group-hover:opacity-100 transition-opacity"><i class="fas fa-external-link-alt"></i></a>
                                 </div>
-                                <p class="text-[11px] text-white/70 leading-relaxed italic font-inter">${coreDoc.description || ""}</p>
+                                <p class="text-[11px] text-white/70 leading-relaxed italic font-inter">${getVal(coreDoc, 'description')}</p>
                             </div>`;
                     } else {
                         coreContainer.innerHTML = `<p class="text-slate-400 text-xs italic font-medium">No primary artifact linked for this project phase.</p>`;
@@ -499,10 +507,10 @@
                             supportContainer.innerHTML += `
                                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl group transition-all hover:border-voltera-blue">
                                     <div class="flex justify-between items-start mb-1">
-                                        <span class="font-bold text-sm text-slate-800 dark:text-slate-200 font-inter">${doc.label}</span>
-                                        <a href="${doc.url}" target="_blank" class="text-slate-400 group-hover:text-voltera-blue transition-colors"><i class="fas fa-external-link-alt text-xs"></i></a>
+                                        <span class="font-bold text-sm text-slate-800 dark:text-slate-200 font-inter">${getVal(doc, 'label')}</span>
+                                        <a href="${getVal(doc, 'url')}" target="_blank" class="text-slate-400 group-hover:text-voltera-blue transition-colors"><i class="fas fa-external-link-alt text-xs"></i></a>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 font-inter">${doc.description || ""}</p>
+                                    <p class="text-[11px] text-slate-500 font-inter">${getVal(doc, 'description')}</p>
                                 </div>`;
                         });
                     }
@@ -520,19 +528,19 @@
             container.innerHTML = '';
             
             try {
-                const currentPhaseNum = focusedProject ? parseInt((focusedProject.currentphase || "0").toString().match(/\d+/) || 0) : 0;
+                const currentPhaseNum = focusedProject ? parseInt((getVal(focusedProject, 'currentphase') || "0").toString().match(/\d+/) || 0) : 0;
                 
                 for (let i = 1; i <= 9; i++) {
-                    const phaseData = cachedPhases.find(p => parseInt(p.phase || 0) === i) || { title: `Phase ${i}` };
+                    const phaseData = cachedPhases.find(p => parseInt(getVal(p, 'phase')) === i) || { title: `Phase ${i}` };
                     let stateClass = 'border-slate-200 dark:border-slate-800'; 
                     let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Phase ${i}</span>`;
                     let progressBarHtml = '';
                     
                     if (focusedProject) {
-                        const track = findTracking(focusedProject.productname, i);
+                        const track = findTrackingRow(getVal(focusedProject, 'productname', 'product'), i);
                         let pctVal = "0%";
                         if (track) {
-                            const pctKey = Object.keys(track).find(k => k.includes('%') || k.includes('percent'));
+                            const pctKey = Object.keys(track).find(k => k.toLowerCase().includes('%') || k.toLowerCase().includes('percent'));
                             pctVal = track[pctKey] || "0%";
                         }
                         const pct = formatPercent(pctVal);
@@ -556,14 +564,14 @@
                     container.innerHTML += `
                         <div onclick="toggleDrawer(${i})" class="phase-card bg-white dark:bg-slate-900 p-4 rounded-2xl text-center flex flex-col items-center group ${stateClass}">
                             ${stateLabel}
-                            <h3 class="font-bold text-xs mt-1 mb-2 uppercase tracking-tighter leading-tight h-8 flex items-center justify-center dark:text-white font-inter">${phaseData.title || "Phase " + i}</h3>
+                            <h3 class="font-bold text-xs mt-1 mb-2 uppercase tracking-tighter leading-tight h-8 flex items-center justify-center dark:text-white font-inter">${getVal(phaseData, 'title')}</h3>
                             ${progressBarHtml}
                             <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200 dark:bg-slate-700' : (i===1 ? 'bg-voltera-blue shadow-[0_0_8px_#0057FF]' : 'bg-slate-200 dark:bg-slate-700')} rounded-full mb-3 transition-colors"></div>
-                            <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-voltera-blue transition-colors font-inter">Explore Phase <i class="fas fa-chevron-right ml-1 text-[7px]"></i></span>
+                            <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-voltera-blue transition-colors font-inter text-xs">Details <i class="fas fa-chevron-right ml-1 text-[7px]"></i></span>
                         </div>`;
                 }
             } catch (err) {
-                container.innerHTML = '<p class="text-xs text-red-500">Error rendering Engine.</p>';
+                container.innerHTML = '<p class="text-xs text-red-500">Error rendering engine data.</p>';
             }
         }
 
@@ -572,10 +580,11 @@
             mapBody.innerHTML = '';
             
             cachedPortfolio.forEach(product => {
-                if (!product.productname) return;
-                const isFocused = focusedProject && (focusedProject.productname || "").toLowerCase().trim() === product.productname.toLowerCase().trim();
+                if (!getVal(product, 'productname', 'product')) return;
+                const pName = getVal(product, 'productname', 'product');
+                const isFocused = focusedProject && getVal(focusedProject, 'productname', 'product').toLowerCase().trim() === pName.toLowerCase().trim();
                 let statusStyles = "bg-slate-700 text-slate-400 border-slate-600";
-                const s = (product.status || "").toLowerCase();
+                const s = (getVal(product, 'status') || "").toLowerCase();
                 
                 if (['pass', 'completed', 'approved'].includes(s)) {
                     statusStyles = "bg-voltera-green/10 text-voltera-green border-voltera-green/30";
@@ -587,16 +596,17 @@
                     statusStyles = "bg-voltera-red/10 text-voltera-red border-voltera-red/30";
                 }
 
-                const artifactsCount = cachedArtifacts.filter(a => (a.productname || "").toLowerCase().trim() === product.productname.toLowerCase().trim()).length;
+                // Count artifacts
+                const artifactsCount = cachedArtifacts.filter(a => getVal(a, 'productname', 'product').toLowerCase().trim() === pName.toLowerCase().trim()).length;
 
                 mapBody.innerHTML += `
-                    <tr onclick="focusProject('${product.productname}')" class="bg-slate-800/50 dark:bg-slate-900 rounded-xl status-pill group transition-all hover:bg-slate-800 ${isFocused ? 'active-project shadow-lg shadow-voltera-blue/20' : ''}">
-                        <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-voltera-white' : 'border-transparent'} rounded-l-xl uppercase tracking-tighter text-white font-inter">${product.productname}</td>
-                        <td class="py-4 px-4 font-bold tracking-tight text-slate-300 font-inter">${product.currentphase}</td>
+                    <tr onclick="focusProject('${pName}')" class="bg-slate-800/50 dark:bg-slate-900 rounded-xl status-pill group transition-all hover:bg-slate-800 ${isFocused ? 'active-project shadow-lg shadow-voltera-blue/20' : ''}">
+                        <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-voltera-white' : 'border-transparent'} rounded-l-xl uppercase tracking-tighter text-white font-inter">${pName}</td>
+                        <td class="py-4 px-4 font-bold tracking-tight text-slate-300 font-inter">${getVal(product, 'currentphase')}</td>
                         <td class="py-4 px-4"><span class="bg-black/20 px-2 py-1 rounded text-[10px] font-black uppercase border border-white/5 text-[#a5b4fc] tracking-widest font-inter">${artifactsCount} Artifacts</span></td>
                         <td class="py-4 px-4">
                             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusStyles} font-inter">
-                                <i class="fas ${['pass','completed','approved'].includes(s) ? 'fa-check' : (['critical','stopped'].includes(s) ? 'fa-times-circle' : (['in progress','working'].includes(s) ? 'fa-pen-nib' : 'fa-clock'))} mr-1"></i> ${product.status || "Unknown"}
+                                <i class="fas ${['pass','completed','approved'].includes(s) ? 'fa-check' : (['critical','stopped'].includes(s) ? 'fa-times-circle' : (['in progress','working'].includes(s) ? 'fa-pen-nib' : 'fa-clock'))} mr-1"></i> ${getVal(product, 'status') || "Unknown"}
                             </span>
                         </td>
                     </tr>`;
@@ -607,8 +617,8 @@
             const config = await fetchSheet('Config');
             if (config.length) {
                 const find = (key) => {
-                    const row = config.find(c => (c.key || "").toLowerCase() === key.toLowerCase());
-                    return row ? row.value : "";
+                    const row = config.find(c => getVal(c, 'key').toLowerCase() === key.toLowerCase());
+                    return row ? getVal(row, 'value') : "";
                 };
                 const title = find('HeroTitle');
                 const desc = find('HeroDescription');
