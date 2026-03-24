@@ -63,7 +63,7 @@
                     <i class="fas fa-microchip text-white"></i>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-sm font-extrabold tracking-tight uppercase leading-none">Voltera <span class="text-voltera-blue">PrOS</span></span>
+                    <span class="text-sm font-extrabold tracking-tight uppercase leading-none text-slate-900 dark:text-white">Voltera <span class="text-voltera-blue">PrOS</span></span>
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Product Operating System</span>
                 </div>
             </div>
@@ -124,7 +124,7 @@
                 <div class="flex items-center justify-between mb-10">
                     <div>
                         <h2 class="text-2xl font-black uppercase tracking-wider text-voltera-blue">Portfolio Status</h2>
-                        <p class="text-slate-400 font-medium italic font-inter">Audit artifacts by selecting a project lifecycle row.</p>
+                        <p class="text-slate-400 font-medium italic font-inter text-sm">Audit artifacts by selecting a project lifecycle row.</p>
                     </div>
                     <span id="last-updated" class="text-xs font-black uppercase tracking-widest text-slate-500">Syncing...</span>
                 </div>
@@ -159,14 +159,14 @@
             <button onclick="toggleDrawer()" class="text-slate-400 hover:text-voltera-red transition-colors"><i class="fas fa-times text-2xl"></i></button>
         </div>
         
-        <h2 id="drawer-title" class="text-3xl font-black mb-2 leading-tight">Phase Title</h2>
+        <h2 id="drawer-title" class="text-3xl font-black mb-2 leading-tight text-slate-900 dark:text-white text-sm">Phase Title</h2>
         <p id="drawer-question" class="text-lg text-voltera-blue font-bold italic mb-10 leading-relaxed italic">The Key Question?</p>
         
         <div id="drawer-status-box" class="mb-10 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all overflow-hidden flex flex-col gap-4">
             <div class="flex items-center gap-5">
                 <div id="drawer-status-icon" class="w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm shrink-0"></div>
                 <div class="flex-1">
-                    <p id="drawer-status-label" class="text-[10px] font-black uppercase tracking-widest opacity-60">Status</p>
+                    <p id="drawer-status-label" class="text-[10px] font-black uppercase tracking-widest opacity-60 text-slate-500">Status</p>
                     <div id="drawer-status-action" class="mt-1"></div>
                 </div>
             </div>
@@ -232,7 +232,7 @@
                 </div>
             </div>
 
-            <!-- Task Checklist (Dynamically populated) -->
+            <!-- Task Checklist -->
             <div id="checklist-section" class="order-6">
                 <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 border-b dark:border-slate-800 pb-2">Phase Milestone Checklist</h4>
                 <div id="checklist-container" class="space-y-3"></div>
@@ -269,7 +269,7 @@
             if(icon) icon.className = 'fas fa-sun';
         }
 
-        const getSheetUrl = (sheetName) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+        const getSheetUrl = (sheetName) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}1ybVCphkVj2pSchWNec3J2J0xm5Urpt5JYR764WkWyFo/${sheetName}`;
 
         async function fetchSheet(name) {
             try {
@@ -291,8 +291,28 @@
             });
         }
 
+        // --- Robust Helper: Format Percent ---
+        function formatPercent(val) {
+            if (val === undefined || val === null || val === "") return "0%";
+            let s = val.toString().trim();
+            if (s.includes('%')) return s;
+            let n = parseFloat(s);
+            if (isNaN(n)) return "0%";
+            if (n <= 1 && n > 0 && s.length < 5) return (Math.round(n * 100)) + "%";
+            return n + "%";
+        }
+
+        // --- Robust Helper: Find Tracking Record ---
+        function findTracking(productName, phaseNum) {
+            if (!cachedTracking || !productName) return null;
+            return cachedTracking.find(t => 
+                (t.Product || "").toLowerCase().trim() === productName.toLowerCase().trim() && 
+                parseInt((t.Phase || "0").toString().match(/\d+/) || 0) === parseInt(phaseNum)
+            );
+        }
+
         function focusProject(projectName) {
-            focusedProject = cachedPortfolio.find(p => p.ProductName === projectName);
+            focusedProject = cachedPortfolio.find(p => (p.ProductName || "").toLowerCase().trim() === projectName.toLowerCase().trim());
             document.getElementById('focused-project-name').innerText = projectName;
             document.getElementById('active-focus-bar').classList.remove('hidden');
             document.getElementById('active-focus-bar').classList.add('flex');
@@ -330,7 +350,7 @@
             const outGateSect = document.getElementById('output-gate-section');
 
             if (phaseNum) {
-                const data = cachedPhases.find(p => parseInt(p.Phase) === phaseNum);
+                const data = cachedPhases.find(p => parseInt(p.Phase || 0) === phaseNum);
                 if (!data) return;
 
                 const outputName = data.Output || "Methodology";
@@ -370,27 +390,27 @@
                     outGateSect.className = "grid grid-cols-1 md:grid-cols-2 gap-8 order-4";
                     methodologySect.className = "order-5";
 
-                    const currentPhaseNum = parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0);
-                    const projectArtifacts = cachedArtifacts.filter(a => a.ProductName === focusedProject.ProductName && parseInt(a.Phase) === phaseNum);
+                    const currentPhaseNum = parseInt((focusedProject.CurrentPhase || "0").toString().match(/\d+/) || 0);
+                    const projectArtifacts = cachedArtifacts.filter(a => (a.ProductName || "").toLowerCase().trim() === focusedProject.ProductName.toLowerCase().trim() && parseInt(a.Phase || 0) === phaseNum);
 
-                    // Logic for Always Showing Progress/Checklist in the active phase
+                    // --- Progress & Checklist Always Logic for Active Phase ---
                     if (phaseNum === currentPhaseNum) {
                         progressContainer.classList.remove('hidden');
                         checklistSect.classList.remove('hidden');
                         
-                        const track = cachedTracking.find(t => t.Product === focusedProject.ProductName && parseInt(t.Phase) === phaseNum);
-                        const pct = track ? track.Percent : "0%";
+                        const track = findTracking(focusedProject.ProductName, phaseNum);
+                        const pct = formatPercent(track ? track.Percent : "0%");
                         progressBar.style.width = pct;
                         progressPercentText.innerText = pct;
 
                         if (track) {
                             for(let i=1; i<=5; i++) {
                                 const taskName = track[`M${i}`];
-                                const isDone = track[`M${i}_Done`]?.toLowerCase() === 'true';
+                                const isDone = (track[`M${i}_Done`] || "").toString().toLowerCase() === 'true';
                                 if (taskName) {
                                     checklistContainer.innerHTML += `
                                         <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                            <div class="w-5 h-5 rounded-md flex items-center justify-center ${isDone ? 'bg-voltera-green text-white' : 'bg-slate-200 dark:bg-slate-700'}">
+                                            <div class="w-5 h-5 rounded-md flex items-center justify-center ${isDone ? 'bg-voltera-green text-white shadow-[0_0_8px_#00C853]' : 'bg-slate-200 dark:bg-slate-700'}">
                                                 <i class="fas fa-check text-[10px]"></i>
                                             </div>
                                             <span class="text-sm font-medium ${isDone ? 'line-through opacity-50' : ''}">${taskName}</span>
@@ -431,12 +451,12 @@
                         statusAction.innerHTML = '<p class="text-xs font-bold text-slate-400 italic font-inter">Not yet started.</p>';
                     }
 
-                    const coreDoc = projectArtifacts.find(a => a.IsCore.toUpperCase() === 'TRUE');
-                    const supportDocs = projectArtifacts.filter(a => a.IsCore.toUpperCase() !== 'TRUE');
+                    const coreDoc = projectArtifacts.find(a => (a.IsCore || "").toString().toUpperCase() === 'TRUE');
+                    const supportDocs = projectArtifacts.filter(a => (a.IsCore || "").toString().toUpperCase() !== 'TRUE');
 
                     if (coreDoc) {
                         coreContainer.innerHTML = `
-                            <div class="bg-voltera-blue dark:bg-voltera-blue/20 p-5 rounded-2xl shadow-lg shadow-voltera-blue/10 border border-voltera-blue/30 group">
+                            <div class="bg-voltera-blue dark:bg-voltera-blue/20 p-5 rounded-2xl shadow-lg shadow-voltera-blue/10 border border-voltera-blue/30 group transition-all hover:bg-voltera-blue/40">
                                 <div class="flex justify-between items-start mb-2">
                                     <h5 class="font-bold text-voltera-white text-sm">${coreDoc.Label}</h5>
                                     <a href="${coreDoc.URL}" target="_blank" class="text-white opacity-60 group-hover:opacity-100 transition-opacity"><i class="fas fa-external-link-alt"></i></a>
@@ -453,7 +473,7 @@
                             supportContainer.innerHTML += `
                                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl group transition-all hover:border-voltera-blue">
                                     <div class="flex justify-between items-start mb-1">
-                                        <span class="font-bold text-sm">${doc.Label}</span>
+                                        <span class="font-bold text-sm text-slate-800 dark:text-slate-200">${doc.Label}</span>
                                         <a href="${doc.URL}" target="_blank" class="text-slate-400 group-hover:text-voltera-blue transition-colors"><i class="fas fa-external-link-alt text-xs"></i></a>
                                     </div>
                                     <p class="text-[11px] text-slate-500">${doc.Description || ""}</p>
@@ -472,17 +492,17 @@
         function renderEngine() {
             const container = document.getElementById('engine-container');
             container.innerHTML = '';
-            const currentPhaseNum = focusedProject ? parseInt(focusedProject.CurrentPhase.match(/\d+/) || 0) : 0;
+            const currentPhaseNum = focusedProject ? parseInt((focusedProject.CurrentPhase || "0").toString().match(/\d+/) || 0) : 0;
             
             for (let i = 1; i <= 9; i++) {
-                const phaseData = cachedPhases.find(p => parseInt(p.Phase) === i) || { Title: `Phase ${i}` };
+                const phaseData = cachedPhases.find(p => parseInt(p.Phase || 0) === i) || { Title: `Phase ${i}` };
                 let stateClass = 'border-slate-200 dark:border-slate-800'; 
                 let stateLabel = `<span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Phase ${i}</span>`;
                 let progressBarHtml = '';
                 
                 if (focusedProject) {
-                    const track = cachedTracking.find(t => t.Product === focusedProject.ProductName && parseInt(t.Phase) === i);
-                    const pct = track ? track.Percent : '0%';
+                    const track = findTracking(focusedProject.ProductName, i);
+                    const pct = formatPercent(track ? track.Percent : '0%');
 
                     if (i < currentPhaseNum) { 
                         stateClass = 'approved'; 
@@ -503,9 +523,9 @@
                 container.innerHTML += `
                     <div onclick="toggleDrawer(${i})" class="phase-card bg-white dark:bg-slate-900 p-4 rounded-2xl text-center flex flex-col items-center group ${stateClass}">
                         ${stateLabel}
-                        <h3 class="font-bold text-xs mt-1 mb-2 uppercase tracking-tighter leading-tight h-8 flex items-center justify-center">${phaseData.Title || "Phase " + i}</h3>
+                        <h3 class="font-bold text-xs mt-1 mb-2 uppercase tracking-tighter leading-tight h-8 flex items-center justify-center dark:text-white">${phaseData.Title || "Phase " + i}</h3>
                         ${progressBarHtml}
-                        <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200 dark:bg-slate-700' : (i===1 ? 'bg-voltera-blue shadow-[0_0_8px_rgba(0,87,255,0.5)]' : 'bg-slate-200 dark:bg-slate-700')} rounded-full mb-3 transition-colors"></div>
+                        <div class="dot w-2 h-2 ${focusedProject ? 'bg-slate-200 dark:bg-slate-700' : (i===1 ? 'bg-voltera-blue shadow-[0_0_8px_#0057FF]' : 'bg-slate-200 dark:bg-slate-700')} rounded-full mb-3 transition-colors"></div>
                         <span class="mt-auto text-[8px] text-slate-400 font-black uppercase tracking-widest group-hover:text-voltera-blue transition-colors">Explore Phase <i class="fas fa-chevron-right ml-1 text-[7px]"></i></span>
                     </div>`;
             }
@@ -516,7 +536,8 @@
             mapBody.innerHTML = '';
             
             cachedPortfolio.forEach(product => {
-                const isFocused = focusedProject && focusedProject.ProductName === product.ProductName;
+                if (!product.ProductName) return;
+                const isFocused = focusedProject && focusedProject.ProductName.toLowerCase().trim() === product.ProductName.toLowerCase().trim();
                 let statusStyles = "bg-slate-700 text-slate-400 border-slate-600";
                 const s = (product.Status || "").toLowerCase();
                 
@@ -530,11 +551,11 @@
                     statusStyles = "bg-voltera-red/10 text-voltera-red border-voltera-red/30";
                 }
 
-                const artifactsCount = cachedArtifacts.filter(a => a.ProductName === product.ProductName).length;
+                const artifactsCount = cachedArtifacts.filter(a => (a.ProductName || "").toLowerCase().trim() === product.ProductName.toLowerCase().trim()).length;
 
                 mapBody.innerHTML += `
-                    <tr onclick="focusProject('${product.ProductName}')" class="bg-slate-800/50 dark:bg-slate-900 rounded-xl status-pill group transition-all hover:bg-slate-800 ${isFocused ? 'active-project' : ''}">
-                        <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-voltera-white' : 'border-transparent'} rounded-l-xl uppercase tracking-tighter">${product.ProductName}</td>
+                    <tr onclick="focusProject('${product.ProductName}')" class="bg-slate-800/50 dark:bg-slate-900 rounded-xl status-pill group transition-all hover:bg-slate-800 ${isFocused ? 'active-project shadow-lg shadow-voltera-blue/20' : ''}">
+                        <td class="py-4 px-4 font-black text-lg border-l-4 ${isFocused ? 'border-voltera-white' : 'border-transparent'} rounded-l-xl uppercase tracking-tighter text-white">${product.ProductName}</td>
                         <td class="py-4 px-4 font-bold tracking-tight text-slate-300">${product.CurrentPhase}</td>
                         <td class="py-4 px-4"><span class="bg-black/20 px-2 py-1 rounded text-[10px] font-black uppercase border border-white/5 text-[#a5b4fc] tracking-widest">${artifactsCount} Artifacts</span></td>
                         <td class="py-4 px-4">
